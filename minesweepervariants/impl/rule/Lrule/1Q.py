@@ -14,19 +14,38 @@ from typing import List
 from ....abs.Lrule import AbstractMinesRule
 from ....abs.board import AbstractPosition, AbstractBoard
 
+def parse(s: str) -> list[tuple[int, int]]:
+    result = [(0,0)]
+    for part in s.split(";"):
+        x = part.count("R") - part.count("L")
+        y = part.count("D") - part.count("U")
+        result.append((x, y))
+    return result
 
-def block(a_pos: AbstractPosition, board: AbstractBoard) -> List[AbstractPosition]:
-    b_pos = a_pos.up()
-    c_pos = a_pos.left()
-    d_pos = b_pos.left()
-    if not board.in_bounds(d_pos):
-        return []
-    return [a_pos, b_pos, c_pos, d_pos]
+def block(a_pos: AbstractPosition, offsets: list[tuple[int, int]], board: AbstractBoard) -> List[AbstractPosition]:
+    positions = []
+    for offset in offsets:
+        new_pos = a_pos.shift(*offset)
+        if board.in_bounds(new_pos):
+            positions.append(new_pos)
+    return positions
 
 
 class Rule1Q(AbstractMinesRule):
     name = ["1Q", "Q", "无方"]
     doc = "每个2x2区域内都至少有一个雷"
+
+    def __init__(self, board: "AbstractBoard" = None, data=None) -> None:
+        super().__init__(board, data)
+        self.nei_values = []
+        self.rule_name = self.name[0]
+        if data is None:
+            self.nei_values = [(0,0), (1,0), (0,1), (1,1)]
+            return
+
+        self.nei_values = parse(data)
+        print(self.nei_values)
+        self.rule_name += "(" + data + ")"
 
     def create_constraints(self, board: 'AbstractBoard', switch):
         model = board.get_model()
@@ -36,7 +55,8 @@ class Rule1Q(AbstractMinesRule):
             a_pos = board.boundary(key=key)
             for b_pos in board.get_col_pos(a_pos):
                 for i_pos in board.get_row_pos(b_pos):
-                    if not (pos_block := block(i_pos, board)):
+                    if not (pos_block := block(i_pos, self.nei_values, board)):
                         continue
+                    print(pos_block)
                     var_list = [board.get_variable(pos) for pos in pos_block]
                     model.AddBoolOr(var_list).OnlyEnforceIf(s)
