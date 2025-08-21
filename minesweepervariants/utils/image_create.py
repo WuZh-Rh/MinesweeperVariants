@@ -184,7 +184,9 @@ def draw_board(
     :param output: 输出文件名（不含扩展名）。
     """
     def load_font(size: int) -> ImageFont.FreeTypeFont:
-        path = os.path.join(CONFIG["assets"], CONFIG["font"]["name"])
+        path = pathlib.Path(minesweepervariants.__path__[0])
+        path /= CONFIG["assets"]
+        path /= CONFIG["font"]["name"]
         try:
             return ImageFont.truetype(path, size)
         except OSError:

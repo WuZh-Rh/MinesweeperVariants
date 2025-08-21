@@ -70,7 +70,7 @@ IMAGE_CONFIG = config = {
         "size": 0.25
     },
 
-    "assets": "minesweepervariants/assets",
+    "assets": "assets",
 
     # 字体设置
     "font": {

@@ -340,15 +340,20 @@ class Summon:
         return None
 
     def dig_unique(self, board: 'AbstractBoard'):
-        if solver_by_csp(
-                self.mines_rules,
-                self.clue_rule,
-                self.mines_clue_rule,
-                board.clone(),
-                drop_r=self.drop_r
-        ) != 1:
-            self.logger.warn("题板存在错误 需要重新设计")
-            self.logger.debug("warn board:\n" + board.show_board())
+        state = solver_by_csp(
+            self.mines_rules,
+            self.clue_rule,
+            self.mines_clue_rule,
+            board.clone(),
+            drop_r=self.drop_r
+        )
+        if state == 0:
+            self.logger.warn("题板无解 需要重新设计")
+            self.logger.warn("warn board:\n" + board.show_board())
+            return None
+        if state == 2:
+            self.logger.warn("题板多解 需要重新设计/+R")
+            self.logger.warn("warn board:\n" + board.show_board())
             return None
 
         # 初始统计

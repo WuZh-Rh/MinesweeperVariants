@@ -444,6 +444,9 @@ class GameSession:
         print(deduced, thread)
         if not deduced and thread:
             return {}
+        if not deduced and self.mode != ULTIMATE:
+            self.logger.error("题板无可推格")
+            return {}
         if not deduced:
             _board = self.board.clone()
             self.step()

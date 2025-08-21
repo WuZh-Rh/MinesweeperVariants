@@ -15,8 +15,9 @@ from ....utils.image_create import get_text, get_row, get_col
 from ....utils.image_create import get_dummy
 from ....utils.tool import get_logger
 
+from ....utils.web_template import MultiNumber
 
-def decode(code: bytes):
+def decode(code: bytes) -> list[int]:
     if len(code) == 2:
         if code[1] > 0xf:
             return [code[1] >> 4, code[1] & 0xf, code[0] >> 4, code[0] & 0xf]
@@ -128,7 +129,7 @@ class Rule1W(AbstractClueRule):
 
 class Value1W(AbstractClueValue):
     def __init__(self, pos: 'AbstractPosition', code: bytes = b''):
-        self.values = decode(code)
+        self.values: list[int] = decode(code)
         self.pos = pos
 
     def __repr__(self):
@@ -188,6 +189,8 @@ class Value1W(AbstractClueValue):
         else:
             # 我也不知道为什么会出现>5个数字的情况
             return get_text("")
+    def web_component(self, board):
+        return MultiNumber(self.values)
 
     @classmethod
     def type(cls) -> bytes:

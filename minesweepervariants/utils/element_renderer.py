@@ -1,21 +1,25 @@
 import os
+import pathlib
 import traceback
 
 from PIL import Image, ImageDraw, ImageFont
 from typing import Dict, Tuple
 
+import minesweepervariants
 from minesweepervariants.utils.tool import get_logger
 
 
 class Renderer:
     def __init__(self, cell_size: float, background_white: bool,
                  origin: Tuple[float, float], font_path: str,
-                 assets:str,debug=False):
+                 assets: str, debug=False):
         self.cell_size = cell_size
         self.background_white = background_white
         self.origin = origin
         self.assets_path = assets
-        self.font_path = os.path.join(os.getcwd(), assets, font_path)
+        self.font_path = pathlib.Path(minesweepervariants.__path__[0])
+        self.font_path /= assets
+        self.font_path /= font_path
         try:
             ImageFont.truetype(self.font_path, 1)
         except Exception as e:
@@ -232,7 +236,9 @@ class Renderer:
 
     def _calculate_image_size(self, element: Dict, max_width: float, max_height: float) -> Tuple[float, float]:
         """计算图像尺寸 - 考虑主导方向"""
-        path = os.path.join(self.assets_path, f"{element['image']}.png")
+        path = pathlib.Path(minesweepervariants.__path__[0])
+        path /= self.assets_path
+        path /= f"{element['image']}.png"
         if not os.path.exists(path):
             return 0.0, 0.0
         img = Image.open(path).convert("RGBA")
@@ -383,7 +389,9 @@ class Renderer:
 
     def _render_image(self, image: Image.Image, element: Dict,
                       box: Tuple[float, float, float, float]):
-        path = os.path.join(self.assets_path, f"{element['image']}.png")
+        path = pathlib.Path(minesweepervariants.__path__[0])
+        path /= self.assets_path
+        path /= f"{element['image']}.png"
         if not os.path.exists(path):
             return None
         img = Image.open(path).convert("RGBA")
