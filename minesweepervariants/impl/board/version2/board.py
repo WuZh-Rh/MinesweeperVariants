@@ -250,7 +250,7 @@ class Board(AbstractBoard):
                             yield pos, None
 
     def has(self, target: str, key: str = None) -> bool:
-        if key not in self.get_board_keys():
+        if key not in self.get_board_keys() + [None]:
             return False
         for pos, type_obj in self(mode="type", key=key):
             if type_obj == target:
