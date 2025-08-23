@@ -96,31 +96,26 @@ class SessionManager:
         self.data[token] = {"info": info}
         return token
 
+    async def get_or_create(self, token: str | None):
+        is_new = False
+        if token is None or token not in self.data:
+            token = await self.new_token()
+            is_new = True
+
+        data = self.get(token)
+
+        if data is None:
+            raise RuntimeError("Session data not found")
+
+        if is_new:
+            data["game"] = Model()
+
+        return is_new, token, data
+
     def wrapper(self, func: RouteCallable) -> RouteCallable:
         async def _func() -> ResponseReturnValue:
             token = request.args.get("token")
-            is_new = False
-            if token is None:
-                token = await self.new_token()
-                is_new = True
-
-            data = self.get(token)
-
-            if data is None:
-                token = await self.new_token()
-                is_new = True
-                self.get(token)
-                data = self.get(token)
-
-            if data is None:
-                print(token, self.data, token in self.data)
-                return Response("Cant get session token", status=500)
-
-            if is_new:
-                data["game"] = Model()
-
-            if data["game"] is None:
-                return Response("Error", status=500)
+            is_new, token, data = await self.get_or_create(token)
 
             result = func(data["game"])
             if isinstance(result, Awaitable):
