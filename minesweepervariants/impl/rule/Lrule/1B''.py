@@ -51,12 +51,27 @@ class Rule1Bpp(AbstractMinesRule):
     name = ["1B''", "后平衡"]
     doc = "雷八方向上的总雷数均相等"
 
+    def __init__(self, board: "AbstractBoard" = None, data=None) -> None:
+        super().__init__(board, data)
+        if data:
+            self.value = int(data)
+            self.rule_name = f"1B''({data})"
+        else:
+            self.value = -1
+            self.rule_name = "1B''"
+
+    def get_name(self):
+        return self.rule_name
+
     def create_constraints(self, board: 'AbstractBoard', switch):
         model = board.get_model()
         s = switch.get(model, self)
 
         ub = board.boundary().x * 3
-        all_n = model.NewIntVar(0, ub, "[1B'']n_number")
+        if self.value == -1:
+            all_n = model.NewIntVar(0, ub, "[1B'']n_number")
+        else:
+            all_n = self.value
 
         for pos, var in board(mode="variable"):
             all_pos = get_line(board, pos)

@@ -57,11 +57,14 @@ class Value1X2X(AbstractClueValue):
     def high_light(self, board: 'AbstractBoard') -> list['AbstractPosition']:
         return self.neighbor
 
-    def compose(self, board, web) -> Dict:
+    def web_component(self, board) -> Dict:
         value = [self.count // 10, self.count % 10]
         value.sort()
-        if web:
-            return MultiNumber(value)
+        return MultiNumber(value)
+
+    def compose(self, board) -> Dict:
+        value = [self.count // 10, self.count % 10]
+        value.sort()
         text_a = get_text(str(value[0]))
         text_b = get_text(str(value[1]))
         return get_row(

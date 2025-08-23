@@ -7,6 +7,32 @@ from ....abs.Rrule import AbstractClueRule, AbstractClueValue
 from ....utils.tool import get_logger
 from ....utils.impl_obj import VALUE_QUESS, MINES_TAG
 
+
+def encode_int_7bit(n: int) -> bytes:
+    # 编码主体：每7位 -> 1字节（bit6~bit0，bit7=0）
+    if n == 0:
+        return b'\x00'
+    payload = []
+
+    while n > 0:
+        payload.append(n & 0x7f)
+        n >>= 7
+
+    return bytes(payload)
+
+
+def decode_bytes_7bit(data: bytes) -> int:
+    if len(data) == 0:
+        return 0
+
+    result = 0
+    for i in data[::-1]:
+        result <<= 7
+        result |= i
+
+    return result
+
+
 class Rule3D(AbstractClueRule):
     name = ["3D", "辞典", "Dict"]
     doc = "所有雷从左到右，从上到下依次标号。线索表示周围八格的雷的标号之和"
@@ -30,17 +56,15 @@ class Rule3D(AbstractClueRule):
                 for nei in pos.neighbors(2):
                     if board.get_type(nei) == "F":
                         value += dict[nei]
-                board.set_value(pos, Value3D(pos, code=bytes([value])))
+                board.set_value(pos, Value3D(pos, code=encode_int_7bit(value)))
                 logger.debug(f"[3D] put {value} to {pos}")
         return board
-    
-    def clue_class(self):
-        return Value3D
-    
+
+
 class Value3D(AbstractClueValue):
     def __init__(self, pos: 'AbstractPosition', code: bytes = b''):
         super().__init__(pos)
-        self.value = code[0]
+        self.value = decode_bytes_7bit(code)
         self.neighbors = pos.neighbors(2)
 
     def __repr__(self) -> str:
@@ -54,7 +78,7 @@ class Value3D(AbstractClueValue):
         return Rule3D.name[0].encode("ascii")
 
     def code(self) -> bytes:
-        return bytes([self.value])
+        return encode_int_7bit(self.value)
 
     def create_constraints(self, board: 'AbstractBoard', switch):
         model = board.get_model()

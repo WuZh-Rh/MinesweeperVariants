@@ -570,7 +570,4 @@ def solver_model(
     status = solver.Solve(model)
     if back_solver:
         return status in (cp_model.OPTIMAL, cp_model.FEASIBLE), solver
-    if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
-        return True
-    else:
-        return None
+    return status in (cp_model.OPTIMAL, cp_model.FEASIBLE)

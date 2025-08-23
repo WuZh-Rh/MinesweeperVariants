@@ -87,11 +87,15 @@ if args.command == "list":
         split_symbol = ''.join([chr(random.randint(33, 126)) for _ in range(50)])
         result = split_symbol.encode(encode)
         for rule_line in ["L", "M", "R"]:
-            result += split_symbol.join([
-                rule_list[rule_line][name]['module_doc']
-                for name in rule_list[rule_line].keys()
-                if rule_list[rule_line][name]['module_doc'] is not None
-            ]).encode(encode)
+            for name in rule_list[rule_line].keys():
+                if not rule_list[rule_line][name]['module_doc']:
+                    unascii_name = [n for n in rule_list[rule_line][name]["names"] if not n.isascii()]
+                    zh_name = unascii_name[0] if unascii_name else ""
+                    part = f"[{name}]{zh_name}: " + rule_list[rule_line][name]["doc"]
+                else:
+                    part = rule_list[rule_line][name]['module_doc']
+                result += part.encode(encode)
+                result += split_symbol.encode(encode)  # 如果原 join 是用分隔符连接
             result += (split_symbol * 2).encode(encode)
         print("hex_start:" + result.hex() + ":hex_end", end="", flush=True)
         # print(result.decode(encode))

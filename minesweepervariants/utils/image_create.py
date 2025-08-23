@@ -340,7 +340,7 @@ def draw_board(
         if pos_label:
             label_font = load_font(int(cell_size * CONFIG["pos_label"]["size"]))
             for pos, obj in board(mode="object", key=key):
-                if obj is not None and obj.compose(board, False)["cover"]:
+                if board.get_type(obj) == "F":
                     continue
                 r, c = pos.x, pos.y
                 x = x_offset + c * cell_size + cell_size / 2
