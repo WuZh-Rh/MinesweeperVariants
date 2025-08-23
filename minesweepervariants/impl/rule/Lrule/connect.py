@@ -9,7 +9,7 @@ from typing import List, Callable, Union
 from ortools.sat.python import cp_model
 from ortools.sat.python.cp_model import IntVar
 
-from ....abs.board import AbstractBoard
+from ....abs.board import AbstractBoard, AbstractPosition
 
 
 def connect(
@@ -19,10 +19,12 @@ def connect(
         ub=False,  # 可达处的上限
         connect_value=1,  # 1=雷连通，0=非雷连通
         nei_value: Union[int, tuple, Callable] = 2,  # 1=四连通，2=八连通
-        root_vars: List[IntVar] = None  # 允许提供根节点变量
+        root_vars: List[IntVar] = None,  # 允许提供根节点变量
+        positions_vars: List[tuple[AbstractPosition, IntVar]] = None,
 ):
     # 获取题板上所有位置及其对应的布尔变量
-    positions_vars = [(pos, var) for pos, var in board("always", mode="variable")]
+    if positions_vars is None:
+        positions_vars = [(pos, var) for pos, var in board("always", mode="variable")]
     if not positions_vars:
         return
 
