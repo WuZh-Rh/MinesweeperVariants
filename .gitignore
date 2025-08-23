@@ -30,3 +30,5 @@ TODO.md
 .vscode/
 build/
 dist/
+
+session.json
