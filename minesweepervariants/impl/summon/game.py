@@ -157,25 +157,25 @@ class GameSession:
 
     @property
     def answer_board(self):
-        result = self.__getattribute__("answer_board")
+        result = self.__dict__["answer_board"]
         if result is None:
             raise AttributeError("answer_board未初始化")
         return result
 
     @answer_board.setter
     def answer_board(self, value):
-        self.__setattr__("answer_board", value)
+        self.__dict__["answer_board"] = value
 
     @property
     def board(self):
-        result = self.__getattribute__("board")
+        result = self.__dict__["board"]
         if result is None:
             raise AttributeError("board未初始化")
         return result
 
     @board.setter
     def board(self, value):
-        self.__setattr__("board", value)
+        self.__dict__["board"] = value
 
     def unbelievable(self, pos, action: int):
         """

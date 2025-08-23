@@ -1,11 +1,7 @@
-import base64
 from dataclasses import dataclass
-from re import U
 import time
 import traceback
-from weakref import ref
 
-import click
 from flask import Response, jsonify, request
 
 from minesweepervariants.abs.board import AbstractBoard, AbstractPosition
@@ -22,7 +18,7 @@ from minesweepervariants.utils.tool import hash_str
 
 from .format import format_board, format_cell, format_gamemode
 from ._typing import CellType, CellState, Board, ClickData, CountInfo, ComponentTemplate, ComponentConfig, CellConfig, BoardMetadata, CreateGameParams, GenerateBoardResult, ResponseType, U_Hint, ClickResponse
-__all__ = ["generate_board", "metadata", "click", "hint_post", "get_rule_list", "reset"]
+__all__ = ["Model"]
 
 @dataclass(slots=True)
 class Model():
@@ -478,13 +474,3 @@ class Model():
                 game.drop_r = True
         print("rest end")
         return '', 200
-
-
-model = Model()
-
-generate_board = model.generate_board
-metadata = model.metadata
-click = model.click
-hint_post = model.hint_post
-get_rule_list = model.get_rule_list
-reset = model.reset

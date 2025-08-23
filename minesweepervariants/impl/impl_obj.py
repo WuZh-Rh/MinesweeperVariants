@@ -21,11 +21,11 @@ from ..abs.Lrule import AbstractMinesRule
 from ..abs.Mrule import AbstractMinesClueRule, AbstractMinesValue
 from ..abs.Rrule import AbstractClueRule, AbstractClueValue
 
-from .board import version1, version2
+from .board import version1, version2, version3
 from . import rule
 
 TOTAL = -1
-hypothesis_board = [version2, version1]
+hypothesis_board = [version3, version2, version1]
 
 
 class ModelGenerateError(Exception):
@@ -75,7 +75,7 @@ def get_all_subclasses(cls):
     return subclasses
 
 
-def get_board(name: Optional[str] = None) -> type:
+def get_board(name: Optional[str] = None):
     if name is None:
         v = -1
         b = None
