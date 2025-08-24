@@ -8,14 +8,13 @@ from .config import HOT_RELOAD
 import minesweepervariants
 
 if HOT_RELOAD:
-    import os
-    os.environ['PYTHONUTF8'] = '1' # to fix encoding issues
-
+    sys.path.insert(0, str(Path(minesweepervariants.__file__).parent.parent / 'jurigged' / 'src'))
     import jurigged
+
     path = minesweepervariants.__package__
     if path is None:
         path = "."
-    jurigged.watch(path)
+    jurigged.watch(path) # type: ignore
 
 from minesweepervariants.utils.tool import get_logger
 

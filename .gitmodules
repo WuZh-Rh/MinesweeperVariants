@@ -1,0 +1,3 @@
+[submodule "jurigged"]
+	path = jurigged
+	url = git@github.com:KoolShow/jurigged.git

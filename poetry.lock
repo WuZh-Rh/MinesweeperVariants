@@ -330,27 +330,6 @@ files = [
 ansicon = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
-name = "jurigged"
-version = "0.6.1"
-description = "Live update of Python functions"
-optional = false
-python-versions = ">=3.9"
-groups = ["main"]
-files = [
-    {file = "jurigged-0.6.1-py3-none-any.whl", hash = "sha256:2479f1e7463c29639ac7764672e2709391ff0910b3cf27125a7985f2a7b04355"},
-    {file = "jurigged-0.6.1.tar.gz", hash = "sha256:840a53bee6963a85d0a4ea5055472526c6b1114ed78ef5a91bde146e9280b04b"},
-]
-
-[package.dependencies]
-blessed = ">=1.20.0"
-codefind = ">=0.1.7,<0.2.0"
-ovld = ">=0.4.0"
-watchdog = ">=4.0.2"
-
-[package.extras]
-develoop = ["giving (>=0.4.3,<0.5.0)", "rich (>=10.13.0)"]
-
-[[package]]
 name = "macholib"
 version = "1.16.3"
 description = "Mach-O header analysis and editing"
@@ -1384,4 +1363,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13,<3.15"
-content-hash = "1aa914f01f03ab27ded503fb5f0ddcf8e3f8b01fc73714b473d2ac4edb53b5ea"
+content-hash = "b38e0a4394366d2507498a6954e84baa11c2c021ecbe4e0745e0046b3bb37067"
