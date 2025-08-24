@@ -3,7 +3,10 @@ import sys
 import threading
 from pathlib import Path
 
-from .config import HOT_RELOAD
+from minesweepervariants.server.model import Model
+from minesweepervariants.server.multiplayer import MPModel
+
+from .config import HOT_RELOAD, MULTIPLAYER
 
 import minesweepervariants
 
@@ -29,8 +32,10 @@ async def main():
     await db.load()
     print("Database initialized.")
 
-    sm = SessionManager(db)
-    app = create_app(sm.wrapper, __name__)
+    _Model = MPModel if MULTIPLAYER else Model
+
+    sm = SessionManager(db, _Model)
+    app = create_app(sm, _Model)
 
     get_logger(log_lv="DEBUG")
     port = int(sys.argv[1] if len(sys.argv) == 2 else "5050")
@@ -41,4 +46,4 @@ async def main():
 
     await db.start()
 
-asyncio.get_event_loop().run_until_complete(main())
+asyncio.run(main())

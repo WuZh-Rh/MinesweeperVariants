@@ -27,7 +27,7 @@ class Model():
     noHint: bool
     noFail: bool
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self.game = None
         self.rules = []
         self.summon = None
