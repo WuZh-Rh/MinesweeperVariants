@@ -1,6 +1,8 @@
 from ....abs.Lrule import AbstractMinesRule
 from ....abs.board import AbstractBoard, AbstractPosition
 
+from .connect import connect
+
 class Rule1S(AbstractMinesRule):
     name = ["1S''", "S''", "传送门蛇", "Portal Snake"]
     doc = "所有雷构成一条蛇。蛇是一条宽度为 1 的四连通路径，不存在分叉、环、交叉。题板的上下左右视为连通。"
@@ -25,6 +27,8 @@ class Rule1S(AbstractMinesRule):
     def create_constraints(self, board, switch):
         model = board.get_model()
         s = switch.get(model, self)
+
+        connect(model, board, s, connect_value=1, nei_value=lambda pos: self.portalNeighbor(pos, board))
 
         tmp_list = []
         for pos, var in board(mode="variable"):
