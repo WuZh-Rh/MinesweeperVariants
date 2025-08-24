@@ -1,6 +1,21 @@
 import asyncio
 import sys
 import threading
+from pathlib import Path
+
+from .config import HOT_RELOAD
+
+import minesweepervariants
+
+if HOT_RELOAD:
+    import os
+    os.environ['PYTHONUTF8'] = '1' # to fix encoding issues
+
+    import jurigged
+    path = minesweepervariants.__package__
+    if path is None:
+        path = "."
+    jurigged.watch(path)
 
 from minesweepervariants.utils.tool import get_logger
 
