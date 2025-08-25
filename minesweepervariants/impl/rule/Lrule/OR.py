@@ -24,7 +24,6 @@ class RuleOR(AbstractMinesRule):
 
     def __init__(self, board: "AbstractBoard" = None, data=None) -> None:
         super().__init__(board, data)
-        name = ""
         rule_list = [""]
         deep = 0
         for s in data:
@@ -52,15 +51,7 @@ class RuleOR(AbstractMinesRule):
             rule = get_rule(rule_name)(board=board, data=rule_data)
             if not isinstance(rule, AbstractMinesRule):
                 continue
-            if rule_name in ["OR", "AND"]:
-                name += "|[" + rule.name[0] + "]"
-            else:
-                name += "|" + rule.name[0]
             self.rules.append(rule)
-        self.rule_name = name[1:]
-
-    def get_name(self):
-        return self.rule_name[:]
 
     def create_constraints(self, board: 'AbstractBoard', switch: 'Switch'):
         model = board.get_model()

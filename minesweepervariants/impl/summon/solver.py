@@ -66,7 +66,7 @@ class Switch:
     @staticmethod
     def to_str(obj: Union[AbstractRule, AbstractValue, AbstractPosition, str]) -> str:
         if isinstance(obj, AbstractRule):
-            name = f"RULE|{obj.name[0]}"
+            name = f"RULE|{obj.get_name()}"
         elif (
                 isinstance(obj, AbstractPosition) or
                 isinstance(obj, AbstractValue)

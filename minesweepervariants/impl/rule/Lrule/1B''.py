@@ -55,13 +55,8 @@ class Rule1Bpp(AbstractMinesRule):
         super().__init__(board, data)
         if data:
             self.value = int(data)
-            self.rule_name = f"1B''({data})"
         else:
             self.value = -1
-            self.rule_name = "1B''"
-
-    def get_name(self):
-        return self.rule_name
 
     def create_constraints(self, board: 'AbstractBoard', switch):
         model = board.get_model()

@@ -5,9 +5,10 @@
 # @FileName: summon.py
 import threading
 import time
-from typing import Union
+from typing import Union, List
 
 from ortools.sat.python import cp_model
+from ortools.sat.python.cp_model import IntVar
 
 from ...abs.Mrule import AbstractMinesClueRule
 from ...abs.Rrule import AbstractClueRule
@@ -16,8 +17,8 @@ from ...utils.impl_obj import set_total, VALUE_QUESS, MINES_TAG
 from .solver import solver_by_csp, solver_model, Switch
 from ...utils.tool import get_random, get_logger
 
-from ...abs.Lrule import MinesRules, AbstractMinesRule
-from ...abs.board import AbstractBoard
+from ...abs.Lrule import MinesRules, AbstractMinesRule, Rule0R
+from ...abs.board import AbstractBoard, AbstractPosition
 
 from ..impl_obj import get_rule, get_board
 
@@ -262,15 +263,15 @@ class Summon:
         switch = Switch()
         random = get_random()
         model = board.get_model()
-        for rule in self.mines_rules.rules:
+        for rule in self.mines_rules.rules + [
+            self.mines_clue_rule, self.clue_rule
+        ]:
             rule.create_constraints(board, switch)
         var_list = [v for _, v in board(mode="variable")]
         model.AddBoolAnd(switch.get_all_vars())
-        solver = None
-        t = time.time()
         __count = 0
         random_total = int(total * (2 ** (1 - len(self.mines_rules.rules))))
-        while time.time() - t < 60:
+        while True:
             __count += 1
             print(f"正在随机放雷 正在尝试第{__count}次 (随机放置{random_total}颗雷)", end="\r", flush=True)
             _model = model.clone()
@@ -299,7 +300,9 @@ class Summon:
         if model is None:
             switch = Switch()
             model = board.get_model()
-            for rule in self.mines_rules.rules:
+            for rule in self.mines_rules.rules + [
+                self.mines_clue_rule, self.clue_rule
+            ]:
                 rule.create_constraints(board, switch)
             model.AddBoolAnd(switch.get_all_vars())
         positions = [pos for pos, _ in self.board("N")]
@@ -337,7 +340,99 @@ class Summon:
                 return board
         return None
 
+    # def _dig_unique(self, board: 'AbstractBoard'):
+    #     model = board.get_model()
+    #     switch = Switch()
+    #     all_rules = self.mines_rules.rules[:]
+    #     all_rules += [self.mines_clue_rule]
+    #     all_rules += [self.clue_rule]
+    #     for rule in all_rules:
+    #         if self.drop_r and isinstance(rule, Rule0R):
+    #             continue
+    #         rule.create_constraints(board, switch)
+    #     model.AddBoolAnd(switch.get_all_vars())
+    #     _board = board.clone()
+    #     # 初始化线索约束
+    #     for key in board.get_board_keys():
+    #         for pos, obj in board("CF", key=key):
+    #             obj.create_constraints(_board, switch)
+    #     # 添加预设题板来剪枝
+    #     diff_var_list = []
+    #     for pos, var in board("N", mode="variable"):
+    #         obj_type = self.answer_board.get_type(pos)
+    #         if obj_type == "F":
+    #             diff_var_list.append(var.Not())
+    #         if obj_type == "C":
+    #             diff_var_list.append(var)
+    #     _model.AddBoolAnd(switch.get_all_vars())
+    #     state = solver_model(_model)
+    #     if not state:
+    #         self.logger.warn("题板无解 需要重新设计")
+    #         self.logger.warn("warn board:\n" + board.show_board())
+    #         return None
+    #     _model.AddBoolOr(diff_var_list)
+    #     state = solver_model(_model)
+    #     if state:
+    #         self.logger.warn("题板多解 需要重新设计/+R")
+    #         self.logger.warn("warn board:\n" + board.show_board())
+    #         return None
+    #     # 随机删除线索
+    #     # 状态压缩至 多解/有解
+    #     model.AddBoolOr(diff_var_list)
+    #     random = get_random()
+    #     # 打乱删除线索
+    #     pos_switch = list(switch_map.keys())
+    #     random.shuffle(pos_switch)
+    #
+    #     disabled_pos: List[AbstractPosition] = []
+    #
+    #     solver = None
+    #
+    #     for pos in pos_switch:
+    #         print(pos)
+    #         _model = model.clone()
+    #         for _pos in disabled_pos + [pos]:
+    #             for v in switch_map[_pos]:
+    #                 _model.Add(v == 0)
+    #             _model.Add(val_map[_pos] == 0)
+    #
+    #         for _pos, _ in board("CF", mode="none"):
+    #             if _pos in disabled_pos + [pos]:
+    #                 continue
+    #             for v in switch_map[_pos]:
+    #                 _model.Add(v == 1)
+    #             _model.Add(val_map[_pos] == 1)
+    #         state, solver = solver_model(_model, True)
+    #
+    #         if state:
+    #             continue
+    #         disabled_pos.append(pos)
+    #
+    #     for pos in pos_switch:
+    #         value = solver.Value(val_map[pos])
+    #         const = any(solver.Value(v) for v in switch_map[pos])
+    #         if value and const:
+    #             # 约束和值开启 该位置不进行任何改变
+    #             continue
+    #         if value and not const:
+    #             # 问号/标志
+    #             board[pos] = board.get_config(
+    #                 pos.board_key,
+    #                 "MINES" if board.get_type(pos) == "F" else "VALUE"
+    #             )
+    #         if not value and const:
+    #             # 该位置未定义但是约束开关开启? 虚空索敌是吧
+    #             get_logger().error("求解器出现错误")
+    #             return None
+    #         if not value and not const:
+    #             # 改位置的线索被完整删除
+    #             board[pos] = None
+    #     return board
+
     def dig_unique(self, board: 'AbstractBoard'):
+        # import sys
+        # if sys.argv[1:2] == ["-s"]:
+        #     return self._dig_unique(board)
         state = solver_by_csp(
             self.mines_rules,
             self.clue_rule,
@@ -477,31 +572,3 @@ class Summon:
         thread.join()
         print(board.show_board())  # 清空残留
         return board
-
-    def clue_coverage(self, board: 'AbstractBoard'):
-        """
-        :param board: 输入题板
-        :return: 返回如果只是鼠标左键点点点会点出来多少的覆盖率
-        """
-        self.logger.debug("clue_coverage:")
-        self.logger.debug(board.encode())
-        # self.logger.debug("\n"+board.show_board())
-        none_number = len([None for _ in board("N")])
-        board = board.clone()
-        while True:
-            flag = True
-            for pos, c in [i for i in board("C")]:
-                if c.deduce_cells(board) is not None:
-                    flag = False
-                    break
-            for r in self.mines_rules.rules:
-                if r.deduce_cells(board):
-                    flag = False
-                    break
-            if flag:
-                break
-            if "N" not in board:
-                return 1, board
-        if none_number:
-            return 1 - len([None for _ in board("N")]) / none_number, board
-        return 0

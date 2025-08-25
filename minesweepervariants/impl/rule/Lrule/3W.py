@@ -26,10 +26,6 @@ class Rule3W(AbstractMinesRule):
         if ":" not in data:
             data += ":0"
         self.b = int(data.split(":")[1])
-        self.rule_name = "3W(" + data + ")"
-
-    def get_name(self):
-        return self.rule_name
 
     def create_constraints(self, board: 'AbstractBoard', switch: 'Switch'):
         model = board.get_model()

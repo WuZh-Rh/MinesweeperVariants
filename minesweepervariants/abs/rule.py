@@ -18,7 +18,7 @@ class AbstractRule(ABC):
     name: Union[Tuple[str], List[str], str] = [""]
 
     def __init__(self, board: "AbstractBoard" = None, data=None) -> None:
-        ...
+        self.__data = data
 
     def create_constraints(self, board: 'AbstractBoard', switch: 'Switch'):
         """
@@ -72,11 +72,14 @@ class AbstractRule(ABC):
 
     def get_name(self):
         if type(self.name) is str:
-            return self.name[:]
+            name = self.name[:]
         elif type(self.name) in [tuple, list]:
-            return self.name[0][:]
+            name = self.name[0][:]
         else:
-            return ""
+            name = ""
+        if self.__data is None:
+            return name
+        return name + ":" + self.__data
 
 
 class AbstractValue(ABC):

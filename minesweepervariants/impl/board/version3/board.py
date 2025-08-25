@@ -165,8 +165,8 @@ class Board(AbstractBoard):
     """
     通过实现
     """
-    name = "Board1"
-    version = 1
+    name = "Board2"
+    version = 0
 
     def __init__(self, size: tuple = None, code: bytes = None):
         self._model = None

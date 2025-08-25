@@ -195,7 +195,7 @@ class GameSession:
                 pos for key in self.answer_board.get_board_keys()
                 for pos, _ in self.answer_board(key=key)
                 if (self.board.get_type(pos) == "N" and
-                    self.answer_board.get_type(pos) == "C")
+                    self.answer_board.get_type(pos) == "F")
             ]
         all_rules = self.summon.mines_rules.rules[:]
         all_rules += [self.summon.clue_rule, self.summon.mines_clue_rule]
@@ -396,17 +396,21 @@ class GameSession:
         else:
             return None
         if (
-                self.mode in [ULTIMATE, PUZZLE] and
-                self.ultimate_mode & ULTIMATE_A
+            self.mode in [ULTIMATE] and
+            self.ultimate_mode & ULTIMATE_A
         ):
             if self.last_deduced[0] != _board:
                 print("last0 uneq board")
                 self.step()
+                if self.drop_r and not self.deduced():
+                    self.drop_r = False
                 self.thread_deduced()
             elif not [_pos for _pos in self.last_deduced[1] if _pos != pos]:
                 print("last1 unfind")
                 if not self.deduced():
                     self.step()
+                if self.drop_r and not self.deduced():
+                    self.drop_r = False
             else:
                 print([_pos for _pos in self.last_deduced[1] if _pos != pos])
                 print(self.last_deduced[0])

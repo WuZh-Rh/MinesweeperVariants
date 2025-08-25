@@ -21,11 +21,9 @@ class Rule1X(AbstractClueRule):
     def __init__(self, board: "AbstractBoard" = None, data=None) -> None:
         super().__init__(board, data)
         self.nei_values = []
-        self.rule_name = self.name[0]
         if data is None:
             self.nei_values = [tuple([1, 1]), tuple([4, 4])]
             return
-        self.rule_name += "(" + data[:] + ")"
         nei_values = data.split(";")
         for nei_value in nei_values:
             if ":" in nei_value:
@@ -35,9 +33,6 @@ class Rule1X(AbstractClueRule):
                 ]))
             else:
                 self.nei_values.append(tuple([int(nei_value)]))
-
-    def get_name(self):
-        return self.rule_name
 
     def nei_pos(self, pos: AbstractPosition):
         positions = []

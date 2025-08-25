@@ -5,6 +5,8 @@ import traceback
 from flask import Response, jsonify, request
 
 from minesweepervariants.abs.board import AbstractBoard, AbstractPosition
+from minesweepervariants.impl.rule.Rrule.Quess import RuleQuess
+from minesweepervariants.impl.rule.Mrule.F import AbstractRule0F
 from minesweepervariants.impl.summon.game import GameSession as Game, Mode, UMode, ValueAsterisk, MinesAsterisk
 from minesweepervariants.impl.summon.summon import Summon
 from minesweepervariants.impl.impl_obj import decode_board
@@ -16,6 +18,7 @@ from minesweepervariants.utils.tool import hash_str
 
 from .format import format_board, format_cell, format_gamemode
 from ._typing import CellType, CellState, Board, ClickData, CountInfo, ComponentTemplate, ComponentConfig, CellConfig, BoardMetadata, CreateGameParams, GenerateBoardResult, ResponseType, U_Hint, ClickResponse
+
 __all__ = ["Model"]
 
 @dataclass(slots=True)
@@ -114,6 +117,7 @@ class Model():
             mask=mask,
             dye=dye
         )
+
         self.summon = summon
 
         self.game = Game(
@@ -123,6 +127,10 @@ class Model():
             ultimate_mode=u_mode
         )
 
+        if isinstance(summon.mines_clue_rule, AbstractRule0F):
+            self.game.flag_tag = MINES_TAG
+        if isinstance(summon.clue_rule, RuleQuess):
+            self.game.clue_tag = VALUE_QUESS
 
         if mode != PUZZLE:
             mask_board = None
@@ -334,7 +342,8 @@ class Model():
         print("[hint] hint start")
         t = time.time()
         hint_list = game.hint()
-        if [k for k in hint_list.keys()][0]:
+        print(hint_list)
+        if [k for k in hint_list.values()][0]:
             self.noHint = False
         print(f"[hint] hint end: {time.time() - t}s")
         for hint in hint_list.items():
@@ -403,6 +412,8 @@ class Model():
         cells = []
         print(hint_list)
         for pos in hint_list[0][0]:
+            if type(pos) is tuple:
+                break
             obj = game.board[pos]
             label = obj not in [
                 VALUE_QUESS, MINES_TAG,
@@ -427,7 +438,6 @@ class Model():
         }
         print("[hint] hint back: ", data)
         return jsonify(data), 200
-
 
     def get_rule_list(self):
         from minesweepervariants.impl.rule import get_all_rules
