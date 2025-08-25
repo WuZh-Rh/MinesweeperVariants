@@ -7,7 +7,6 @@ from typing import List
 from ....abs.Lrule import AbstractMinesRule
 from ....abs.board import AbstractPosition, AbstractBoard
 
-
 def parse(s: str) -> list[tuple[int, int]]:
     result = [(0,0)]
     for part in s.split(";"):
@@ -20,9 +19,11 @@ def block(a_pos: AbstractPosition, offsets: list[tuple[int, int]], board: Abstra
     positions = []
     for offset in offsets:
         new_pos = a_pos.shift(offset[1], offset[0])  # 注意这里行列顺序
-        if board.in_bounds(new_pos):
-            positions.append(new_pos)
+        if not board.in_bounds(new_pos):
+            continue
+        positions.append(new_pos)
     return positions
+
 
 class Rule1Q(AbstractMinesRule):
     name = ["1Q~", "Q~", "雷无方"]

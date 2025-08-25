@@ -26,8 +26,9 @@ def block(a_pos: AbstractPosition, offsets: list[tuple[int, int]], board: Abstra
     positions = []
     for offset in offsets:
         new_pos = a_pos.shift(offset[1], offset[0])  # 注意这里行列顺序
-        if board.in_bounds(new_pos):
-            positions.append(new_pos)
+        if not board.in_bounds(new_pos):
+            continue
+        positions.append(new_pos)
     return positions
 
 
