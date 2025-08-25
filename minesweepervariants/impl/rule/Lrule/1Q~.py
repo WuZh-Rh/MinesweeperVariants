@@ -53,6 +53,3 @@ class Rule1Q(AbstractMinesRule):
                         continue
                     var_list = [board.get_variable(pos) for pos in pos_block]
                     model.AddBoolOr([~v for v in var_list]).OnlyEnforceIf(s)
-
-    def get_name(self):
-        return self.rule_name
