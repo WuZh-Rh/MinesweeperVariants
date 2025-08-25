@@ -25,7 +25,7 @@ def parse(s: str) -> list[tuple[int, int]]:
 def block(a_pos: AbstractPosition, offsets: list[tuple[int, int]], board: AbstractBoard) -> List[AbstractPosition]:
     positions = []
     for offset in offsets:
-        new_pos = a_pos.shift(*offset)
+        new_pos = a_pos.shift(offset[1], offset[0])  # 注意这里行列顺序
         if board.in_bounds(new_pos):
             positions.append(new_pos)
     return positions
@@ -57,6 +57,8 @@ class Rule1Q(AbstractMinesRule):
                 for i_pos in board.get_row_pos(b_pos):
                     if not (pos_block := block(i_pos, self.nei_values, board)):
                         continue
-                    print(pos_block)
                     var_list = [board.get_variable(pos) for pos in pos_block]
                     model.AddBoolOr(var_list).OnlyEnforceIf(s)
+
+    def get_name(self):
+        return self.rule_name
