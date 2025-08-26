@@ -6,17 +6,17 @@
 # @FileName: 2#.py
 """
 [1#']包含以下规则:
-[V], [1M], [1L], [1W], [1W'], [1N], [1X], [1X'], [1P], [1E], [1E']
+[V], [1M], [1L], [1W], [1N], [1X], [1P], [1E]
 """
 from minesweepervariants.abs.board import AbstractBoard
-from . import AbstractSharp as AbstractClueSharp
+from . import AbstractClueSharp
 
 
-class Rule2sharp(AbstractClueSharp):
+class Rule1sharp(AbstractClueSharp):
     name = ["1#", "标签"]
-    doc = "包含以下规则:[V], [1M], [1L], [1W], [1W'], [1N], [1X], [1X'], [1P], [1E], [1E']"
+    doc = "包含以下规则:[V], [1M], [1L], [1W], [1N], [1X], [1P], [1E]"
 
     def __init__(self, board: "AbstractBoard" = None, data=None) -> None:
-        rules_name = ["V", "1M", "1L", "1W", "1W'", "1N", "1X", "1P", "1E", "1E'"]
+        rules_name = ["V", "1M", "1L", "1W", "1N", "1X", "1P", "1E"]
         super().__init__(rules_name, board, data)
 

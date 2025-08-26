@@ -27,16 +27,17 @@ class RuleSharp(AbstractClueRule):
 
     def fill(self, board: 'AbstractBoard') -> 'AbstractBoard':
         boards = []
+        random = get_random()
         for rule in self.rules:
             boards.append(rule.fill(board.clone()))
         for key in board.get_board_keys():
             for pos, _ in board("N", key=key):
                 values = [_board.get_value(pos)
                           for _board in boards
-                          if _board.get_type(pos) != "N"]
+                          if _board.get_type(pos) == "C"]
                 if not values:
                     continue
-                board.set_value(pos, get_random().choice(values))
+                board.set_value(pos, random.choice(values))
         return board
 
     def suggest_total(self, info: dict):

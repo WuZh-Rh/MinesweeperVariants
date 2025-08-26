@@ -5,17 +5,19 @@
 # @Author  : xxx
 # @FileName: sharp.py
 """
-[F#]雷标签: 雷线索会有不同的规则, 每个雷线索的规则会单独标出
+[#]标签: 线索会有不同的规则, 每个线索的规则会单独标出
 """
+from typing import List, Tuple, Optional
 
 from ....abs.Mrule import AbstractMinesClueRule
 from ....abs.board import AbstractBoard
+from ....abs.rule import AbstractRule
 from ....utils.tool import get_random
 
 
 class RuleSharp(AbstractMinesClueRule):
-    name = "F#"
-    subrules = []
+    name = ["#", "标签", "Tag"]
+    doc = "线索会有不同的规则, 每个线索的规则会单独标出"
 
     def __init__(self, board: AbstractBoard, data: list[AbstractMinesClueRule]):
         super().__init__(board, None)
@@ -36,6 +38,10 @@ class RuleSharp(AbstractMinesClueRule):
                     continue
                 board.set_value(pos, get_random().choice(values))
         return board
+
+    def combine(self, rules: List[Tuple['AbstractRule', Optional[str]]]):
+        for rule in self.rules:
+            rule.combine(rules)
 
     def suggest_total(self, info: dict):
         for rule in self.rules:

@@ -9,7 +9,7 @@
 注: 通过"2#:"来去除2A
 """
 from minesweepervariants.abs.board import AbstractBoard
-from . import AbstractSharp as AbstractClueSharp
+from . import AbstractClueSharp
 
 
 class Rule2sharp(AbstractClueSharp):

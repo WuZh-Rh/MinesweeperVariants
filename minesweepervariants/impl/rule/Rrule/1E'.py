@@ -199,7 +199,7 @@ class Value1E(AbstractClueValue):
 
     def web_component(self, board) -> Dict:
         if self.value == 0:
-            return Number(0)
+            return super().web_component(board)
         if self.value < 0:
             return get_col(
                 get_image(
@@ -220,7 +220,7 @@ class Value1E(AbstractClueValue):
 
     def compose(self, board):
         if self.value == 0:
-            return get_text("0")
+            return super().compose(board)
         if self.value < 0:
             return get_col(
                 get_image(
