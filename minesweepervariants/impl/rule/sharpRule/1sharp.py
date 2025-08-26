@@ -9,7 +9,7 @@
 [V], [1M], [1L], [1W], [1N], [1X], [1P], [1E]
 """
 from minesweepervariants.abs.board import AbstractBoard
-from . import AbstractSharp as AbstractClueSharp
+from . import AbstractClueSharp
 
 
 class Rule1sharp(AbstractClueSharp):

@@ -21,6 +21,8 @@ from ...abs.Lrule import MinesRules, AbstractMinesRule, Rule0R
 from ...abs.board import AbstractBoard, AbstractPosition
 
 from ..impl_obj import get_rule, get_board
+from ...impl.rule.Mrule.sharp import RuleSharp as RuleMinesSharp
+from ...impl.rule.Rrule.sharp import RuleSharp as RuleClueSharp
 
 from minesweepervariants.config.config import PUZZLE_CONFIG
 
@@ -110,7 +112,7 @@ class Summon:
         elif len(mines_clue_rules) > 1:
             # 我什么时候写的F#?
             # 我不道啊
-            self.mines_clue_rule = get_rule("F#")(board=self.board, data=mines_clue_rules)
+            self.mines_clue_rule = RuleMinesSharp(board=self.board, data=mines_clue_rules)
             rules.append("F#")
         else:
             self.mines_clue_rule = mines_clue_rules[0]
@@ -123,7 +125,7 @@ class Summon:
             else:
                 self.clue_rule = get_rule("?")(board=self.board, data="")
         elif len(clue_rules) > 1:
-            self.clue_rule = get_rule("#")(board=self.board, data=clue_rules)
+            self.clue_rule = RuleClueSharp(board=self.board, data=clue_rules)
             rules.append("#")
         else:
             self.clue_rule = clue_rules[0]

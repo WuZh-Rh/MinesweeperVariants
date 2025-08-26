@@ -6,10 +6,10 @@
 # @FileName: Fshape.py
 
 from minesweepervariants.abs.board import AbstractBoard
-from . import AbstractSharp as AbstractClueSharp
+from . import AbstractMinesSharp
 
 
-class RuleFsharp(AbstractClueSharp):
+class RuleFsharp(AbstractMinesSharp):
     name = ["F#", "标签"]
     doc = "包含以下规则:[*3T], [3], [3F]"
 
