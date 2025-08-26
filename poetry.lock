@@ -318,6 +318,31 @@ files = [
 ansicon = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
+name = "jurigged"
+version = "0.6.1"
+description = "Live update of Python functions"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = []
+develop = false
+
+[package.dependencies]
+blessed = ">=1.20.0"
+codefind = ">=0.1.7,<0.2.0"
+ovld = ">=0.4.0"
+watchdog = ">=4.0.2"
+
+[package.extras]
+develoop = ["giving (>=0.4.3,<0.5.0)", "rich (>=10.13.0)"]
+
+[package.source]
+type = "git"
+url = "https://github.com/KoolShow/jurigged.git"
+reference = "0.6.1-dev"
+resolved_reference = "b283a87712068d3886c4008c754c246698fe37c2"
+
+[[package]]
 name = "markupsafe"
 version = "3.0.2"
 description = "Safely add untrusted strings to HTML/XML markup."
@@ -1225,4 +1250,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.15"
-content-hash = "f99192d87aa504a1f07c6ee1cf2907e4cdf5435101e2af86fbf05b84d340f29f"
+content-hash = "ee2a917667053396dc05cd3df5892f1d6e03841263bd2d1c69ad06fc20f049d5"

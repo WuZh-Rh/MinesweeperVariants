@@ -9,22 +9,17 @@ authors = [
 license = "GPL-3.0-or-later"
 readme = "README.md"
 requires-python = ">=3.12,<3.15"
-dependencies = [
-    "ortools (>=9.13.4784,<9.14.0)",
-    "pillow (>=11.3.0,<11.4.0)",
-    "pyyaml (>=6.0.2,<6.1.0)",
-    "flask[async] (>=3.1.2,<4.0.0)",
-    "flask-cors (>=6.0.1,<7.0.0)",
-    "waitress (>=3.0.2,<3.1.0)",
-    "tqdm (>=4.67.1,<5.0.0)",
-    "orjson (>=3.11.2,<4.0.0)",
 
-    "blessed>=1.20.0",
-    "codefind~=0.1.7",
-    "ovld>=0.4.0",
-    "watchdog>=4.0.2",
-]
-
+[tool.poetry.dependencies]
+ortools = ">=9.13.4784,<9.14.0"
+pillow = ">=11.3.0,<11.4.0"
+pyyaml = ">=6.0.2,<6.1.0"
+flask = { version = ">=3.1.2,<4.0.0", extras = ["async"] }
+flask-cors = ">=6.0.1,<7.0.0"
+waitress = ">=3.0.2,<3.1.0"
+tqdm = ">=4.67.1,<5.0.0"
+orjson = ">=3.11.2,<4.0.0"
+jurigged = { git = "https://github.com/KoolShow/jurigged.git", rev = "0.6.1-dev" }
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
