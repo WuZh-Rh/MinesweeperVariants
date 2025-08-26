@@ -11,12 +11,15 @@ from .config import HOT_RELOAD, MULTIPLAYER
 import minesweepervariants
 
 if HOT_RELOAD:
-    import jurigged
+    try:
+        import jurigged
 
-    path = minesweepervariants.__package__
-    if path is None:
-        path = "."
-    jurigged.watch(path)  # type: ignore
+        path = minesweepervariants.__package__
+        if path is None:
+            path = "."
+        jurigged.watch(path)
+    except ImportError:
+        print("jurigged not installed, hot-reload disabled")
 
 from minesweepervariants.utils import tool
 

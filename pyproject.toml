@@ -19,7 +19,6 @@ flask-cors = ">=6.0.1,<7.0.0"
 waitress = ">=3.0.2,<3.1.0"
 tqdm = ">=4.67.1,<5.0.0"
 orjson = ">=3.11.2,<4.0.0"
-jurigged = { git = "https://github.com/KoolShow/jurigged.git", rev = "0.6.1-dev" }
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -27,3 +26,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^9.4.0"
+jurigged = { git = "https://github.com/KoolShow/jurigged.git", rev = "0.6.1-dev" }
