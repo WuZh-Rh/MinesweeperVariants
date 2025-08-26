@@ -21,6 +21,7 @@ def get_text(
     cover_pos_label: bool = True,
     color: tuple[str, str] = ("#FFFFFF", "#000000"),
     dominant_by_height: bool = True,
+    style: str = "",
 ):
     """
     :param text:文本内容
@@ -29,6 +30,7 @@ def get_text(
     :param cover_pos_label: 覆盖格子内的X=N标识
     :param dominant_by_height: 高主导的对齐 否则宽主导
     :param color: 色号字符串#RRGGBB 第一个表示黑底 第二个表示白底 '#FFFFFF'表示白色
+    :param style: (web) 样式内容
     """
     if dominant_by_height is None:
         dominant = None
@@ -44,7 +46,8 @@ def get_text(
         'height': height,
         "font_size": 1,
         "cover": cover_pos_label,
-        "dominant": dominant
+        "dominant": dominant,
+        "style": style,
     }
 
 
@@ -54,6 +57,7 @@ def get_image(
     image_height: float = "auto",
     cover_pos_label: bool = True,
     dominant_by_height: bool = True,
+    style: str = "",
 ):
     """
     :param image_path:图片在data下的路径位置
@@ -61,6 +65,7 @@ def get_image(
     :param image_height:图片的垂直缩放比例
     :param cover_pos_label:是否覆盖X=N标识
     :param dominant_by_height: 高主导的对齐 否则宽主导
+    :param style: (web) 样式内容
     """
     if dominant_by_height is None:
         dominant = None
@@ -72,7 +77,8 @@ def get_image(
         'height': image_height,  # 高度（单元格单位或auto）
         'width': image_width,   # 宽度（单元格单位或auto）
         "cover": cover_pos_label,
-        "dominant": dominant
+        "dominant": dominant,
+        "style": style,
     }
 
 

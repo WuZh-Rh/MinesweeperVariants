@@ -199,11 +199,11 @@ class Value1E(AbstractClueValue):
 
     def web_component(self, board) -> Dict:
         if self.value == 0:
-            return super().web_component(board)
+            return Number(0)
         if self.value < 0:
             return get_col(
                 get_image(
-                    "double_horizontal_arrow",
+                    "double_arrow",
                     image_height=0.4,
                 ),
                 get_dummy(height=-0.1),
@@ -212,7 +212,10 @@ class Value1E(AbstractClueValue):
         if self.value > 0:
             return get_row(
                 get_dummy(width=0.15),
-                get_image("double_vertical_arrow", ),
+                get_image(
+                    "double_arrow",
+                    style="transform: rotate(90deg);"
+                ),
                 get_dummy(width=-0.15),
                 get_text(str(self.value)),
                 get_dummy(width=0.15),

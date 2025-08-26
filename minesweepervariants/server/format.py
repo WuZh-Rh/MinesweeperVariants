@@ -4,7 +4,7 @@ from minesweepervariants.server._typing import BoardMetadata
 from minesweepervariants.utils.impl_obj import VALUE_QUESS, MINES_TAG
 
 
-def init_component(data: dict, *, color: str='--primary-color', invalid: bool = False) -> dict:
+def init_component(data: dict, *, color: str = '--primary-color', invalid: bool = False) -> dict:
     if data["type"] in ["col", "row"]:
         style = "display: flex; "
         if data["type"] == "col":
@@ -36,10 +36,11 @@ def init_component(data: dict, *, color: str='--primary-color', invalid: bool = 
     elif data["type"] == "text":
         # 文本项：使用 flex 布局填充可用空间，添加溢出处理
         style = (f"color: rgb(from var({color}) r g b / "
-                    f"{50 if invalid else 100}%); text-align: center;")
+                 f"{50 if invalid else 100}%); text-align: center;")
         style += " display: flex; justify-content: center; align-items: center;"
         style += " flex: 1; min-width: 0; max-width: 100%;"  # 关键：允许内容收缩
         style += " overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+        style += data["style"]
 
         return {
             "type": "text",
@@ -54,7 +55,8 @@ def init_component(data: dict, *, color: str='--primary-color', invalid: bool = 
             "type": "assets",
             "value": path,
             "style": f"fill: rgb(from var({color}) r g b / "
-                        f"{50 if invalid else 100}%); flex: 1; min-width: 0;"
+                     f"{50 if invalid else 100}%); flex: 1; min-width: 0;"
+                     f"{data['style']}"
         }
 
     elif data["type"] == "placeholder":
@@ -75,6 +77,7 @@ def init_component(data: dict, *, color: str='--primary-color', invalid: bool = 
     elif data["type"] == "template":
         return data
     raise ValueError("Unknown component type")
+
 
 def format_cell(_board, pos, label):
     obj = _board[pos]
@@ -189,6 +192,7 @@ def format_board(_board: AbstractBoard):
                 format_cell(_board, pos, label))
             count += 1
     return boards, cells, count
+
 
 def format_gamemode(gamemode: Mode, u_gamemode: UMode):
     u_mode: list[str] = []
