@@ -11,7 +11,6 @@ from .config import HOT_RELOAD, MULTIPLAYER
 import minesweepervariants
 
 if HOT_RELOAD:
-    sys.path.insert(0, str(Path(minesweepervariants.__file__).parent.parent / 'jurigged' / 'src'))
     import jurigged
 
     path = minesweepervariants.__package__
