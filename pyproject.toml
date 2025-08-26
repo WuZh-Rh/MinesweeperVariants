@@ -1,12 +1,14 @@
 [project]
 name = "minesweepervariants"
-version = "0.1.0"
+version = "0.0.0"
 description = ""
 authors = [
-    {name = "Your Name",email = "you@example.com"}
+    {name = "WuZh-Rh",email = "you@example.com"},
+    {name = "KoolShow",email = "51787949+KoolShow@users.noreply.github.com"}
 ]
+license = "GPL-3.0-or-later"
 readme = "README.md"
-requires-python = ">=3.13,<3.15"
+requires-python = ">=3.12,<3.15"
 dependencies = [
     "ortools (>=9.13.4784,<9.14.0)",
     "pillow (>=11.3.0,<11.4.0)",
@@ -29,5 +31,4 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.group.dev.dependencies]
-pyinstaller = "^6.15.0"
 ipython = "^9.4.0"
