@@ -16,14 +16,15 @@ if HOT_RELOAD:
     path = minesweepervariants.__package__
     if path is None:
         path = "."
-    jurigged.watch(path) # type: ignore
+    jurigged.watch(path)  # type: ignore
 
-from minesweepervariants.utils.tool import get_logger
+from minesweepervariants.utils import tool
 
 import waitress
 
 from .router import create_app
 from .session import DataStore, SessionManager
+
 
 async def main():
     print("Initializing database...")
@@ -36,7 +37,8 @@ async def main():
     sm = SessionManager(db, _Model)
     app = create_app(sm, _Model)
 
-    get_logger(log_lv="DEBUG")
+    tool.LOGGER = None
+    tool.get_logger(log_lv="DEBUG")
     port = int(sys.argv[1] if len(sys.argv) == 2 else "5050")
     host = "0.0.0.0"
 
@@ -44,5 +46,6 @@ async def main():
     threading.Thread(target=waitress.serve, args=(app,), kwargs={"host": host, "port": port}).start()
 
     await db.start()
+
 
 asyncio.run(main())

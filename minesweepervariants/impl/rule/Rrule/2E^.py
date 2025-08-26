@@ -20,7 +20,7 @@ class Rule2Eq(AbstractClueRule):
     name = ["2E^", "加密^", "Encrypted^"]
 
     def __init__(self, data=None, board: 'AbstractBoard' = None):
-        super().__init__(data, board)
+        super().__init__(board, data)
         pos = board.boundary()
         size = min(pos.x + 1, 9)
         board.generate_board(NAME_2Eq, (size, size))

@@ -52,7 +52,7 @@ class Rule2L(AbstractClueRule):
     doc = "每行每列恰有一个误差线索。误差线索的值比真实值大 1 或小 1"
 
     def __init__(self, board: "AbstractBoard" = None, data=None) -> None:
-        super().__init__(data, board)
+        super().__init__(board, data)
         bound = board.boundary()
         if bound.x != bound.y:
             raise ValueError("请输入一个正方形题板")

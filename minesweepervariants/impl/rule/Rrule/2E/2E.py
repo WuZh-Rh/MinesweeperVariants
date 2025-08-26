@@ -22,7 +22,7 @@ class Rule2E(AbstractClueRule):
     doc = "线索被字母所取代，每个字母对应一个线索，且每个线索对应一个字母"
 
     def __init__(self, data=None, board: 'AbstractBoard' = None):
-        super().__init__(data, board)
+        super().__init__(board, data)
         pos = board.boundary()
         size = min(pos.x + 1, 9)
         board.generate_board(NAME_2E, (size, size))

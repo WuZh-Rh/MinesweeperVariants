@@ -47,7 +47,7 @@ class Rule2M(AbstractClueRule):
     doc = "每行每列恰有一个雷被视为两个(总雷数不受限制)"
 
     def __init__(self, board: "AbstractBoard" = None, data=None) -> None:
-        super().__init__(data, board)
+        super().__init__(board, data)
         bound = board.boundary()
         if bound.x != bound.y:
             raise ValueError("请输入一个正方形题板")
