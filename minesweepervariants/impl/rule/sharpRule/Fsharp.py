@@ -9,7 +9,7 @@ from minesweepervariants.abs.board import AbstractBoard
 from . import AbstractSharp as AbstractClueSharp
 
 
-class Rule2sharp(AbstractClueSharp):
+class RuleFsharp(AbstractClueSharp):
     name = ["F#", "标签"]
     doc = "包含以下规则:[*3T], [3], [3F]"
 
