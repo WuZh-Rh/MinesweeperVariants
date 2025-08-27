@@ -96,7 +96,7 @@ def format_cell(_board, pos, label):
     if (
         _board.get_config(pos.board_key, "pos_label") and
         (
-            _board.get_type(pos) == "C" or
+            _board.get_type(pos) == "F" or
             _board.get_type(pos) == "N"
         )
     ):
