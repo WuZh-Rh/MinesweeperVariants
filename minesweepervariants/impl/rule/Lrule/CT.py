@@ -15,5 +15,6 @@ class RuleCT(AbstractMinesRule):
         s = switch.get(model, self)
         for pos, var in board(mode="var"):
             var_list = board.batch(pos.neighbors(1), mode="var", drop_none=True)
-            model.Add(sum(var_list) >= 1).OnlyEnforceIf([var, s])
-            model.Add(sum(var_list) <= 3).OnlyEnforceIf([var, s])
+            sum_var = model.NewIntVar(0, len(var_list), "[CT]")
+            model.Add(sum(var_list) == sum_var)
+            model.AddAllowedAssignments([sum_var], [[1], [3]]).OnlyEnforceIf([var, s])

@@ -2,6 +2,8 @@
 [2Q'] 章鱼 (Octopus)：线索表示八方向上最近的2格有雷的方向数量。
 """
 
+from typing import List
+
 from minesweepervariants.utils.impl_obj import MINES_TAG, VALUE_QUESS
 from ....abs.Rrule import AbstractClueRule, AbstractClueValue
 from ....abs.board import AbstractBoard, AbstractPosition
