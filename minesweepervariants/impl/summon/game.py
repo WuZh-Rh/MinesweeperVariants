@@ -412,22 +412,35 @@ class GameSession:
             self.mode in [ULTIMATE] and
             self.ultimate_mode & ULTIMATE_A
         ):
-            if self.last_deduced[0] != _board:
-                print("last0 uneq board")
-                self.step()
-                if self.drop_r and not self.deduced():
+            self.step()
+            if self.drop_r:
+                flag = True
+                if self.ultimate_mode & ULTIMATE_F:
+                    for pos in self.deduced():
+                        if self.answer_board.get_type(pos) != "F":
+                            continue
+                        if pos.board_key not in self.board.get_interactive_keys():
+                            continue
+                        flag = False
+                        break
+                if self.ultimate_mode & ULTIMATE_S:
+                    for pos in self.deduced():
+                        if pos.board_key in self.board.get_interactive_keys():
+                            continue
+                        flag = False
+                        break
+                for pos in self.deduced():
+                    if pos.board_key not in self.board.get_interactive_keys():
+                        continue
+                    if self.answer_board.get_type(pos) == "F":
+                        continue
+                    flag = False
+                    break
+                if flag:
                     self.drop_r = False
                     self.last_deduced[0] = None
-                self.thread_deduced()
-            elif not [_pos for _pos in self.last_deduced[1] if _pos != pos]:
-                print("last1 unfind")
-                if not self.deduced():
-                    self.step()
-                if self.drop_r and not self.deduced():
-                    self.drop_r = False
-            else:
-                print([_pos for _pos in self.last_deduced[1] if _pos != pos])
-                print(self.last_deduced[0])
+                    self.deduced()
+            self.thread_deduced()
         return self.board
 
     def click(self, pos: "AbstractPosition") -> Union["AbstractBoard", None]:
@@ -443,32 +456,29 @@ class GameSession:
         """
         return self.apply(pos, 1)
 
-    def step(self):
+    def step(self) -> bool:
         print("step")
-        # 没有可推格了
-        # TODO 检查终极的+F+S
-        flag = False
         if self.ultimate_mode & ULTIMATE_F:
             for pos in self.deduced():
                 if self.answer_board.get_type(pos) != "F":
                     continue
-                flag = True
-                break
+                if pos.board_key not in self.board.get_interactive_keys():
+                    continue
+                print("[step]has flag")
+                return False
         if self.ultimate_mode & ULTIMATE_S:
             for pos in self.deduced():
                 if pos.board_key in self.board.get_interactive_keys():
                     continue
-                flag = True
-                break
+                print("[step]has mark")
+                return False
         for pos in self.deduced():
             if pos.board_key not in self.board.get_interactive_keys():
                 continue
             if self.answer_board.get_type(pos) == "F":
                 continue
-            flag = True
-            break
-        if flag:
-            return
+            print("[step]has clue")
+            return False
         for key in self.board.get_board_keys():
             for pos, obj in self.board(key=key):
                 if obj not in [self.clue_tag, self.flag_tag]:
@@ -478,6 +488,7 @@ class GameSession:
         self.last_deduced[0] = None
         self.last_hint[0] = None
         self.thread_hint()
+        return True
 
     def deduced(self, thread=True):
         """
@@ -490,7 +501,26 @@ class GameSession:
             for pos in self.last_deduced[1][:]:
                 if self.board[pos] is not None:
                     self.last_deduced[1].remove(pos)
-            if self.last_deduced[1]:
+            if self.ultimate_mode & ULTIMATE_F:
+                for pos in self.last_deduced[1]:
+                    if self.answer_board.get_type(pos) != "F":
+                        continue
+                    if pos.board_key not in self.board.get_interactive_keys():
+                        continue
+                    print("[deduced]has flag")
+                    return self.last_deduced[1]
+            if self.ultimate_mode & ULTIMATE_S:
+                for pos in self.last_deduced[1]:
+                    if pos.board_key in self.board.get_interactive_keys():
+                        continue
+                    print("[deduced]has mark")
+                    return self.last_deduced[1]
+            for pos in self.last_deduced[1]:
+                if pos.board_key not in self.board.get_interactive_keys():
+                    continue
+                if self.answer_board.get_type(pos) == "F":
+                    continue
+                print("[deduced]has clue")
                 return self.last_deduced[1]
         self.deduced_queue.put("process")  # 请求处理权
         try:
