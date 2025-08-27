@@ -209,8 +209,16 @@ class Model():
         if game.mode == ULTIMATE:
             deduced = game.deduced()
             board_data["u_hint"] = {
-                "flagcount": len([None for _pos in deduced if game.answer_board.get_type(_pos) == "F"]),
-                "emptycount": len([None for _pos in deduced if game.answer_board.get_type(_pos) == "C"]),
+                "flagcount": len([
+                    None for _pos in deduced if (
+                        game.answer_board.get_type(_pos) == "F" and
+                        _pos.board_key in game.answer_board.get_interactive_keys()
+                    )]),
+                "emptycount": len([
+                    None for _pos in deduced if (
+                        game.answer_board.get_type(_pos) == "C" and
+                        _pos.board_key in game.answer_board.get_interactive_keys()
+                    )]),
                 "markcount": len([None for _pos in deduced if _pos.board_key not in game.board.get_interactive_keys()])
             }
 
@@ -325,8 +333,16 @@ class Model():
         if game.mode == ULTIMATE:
             deduced = game.deduced()
             refresh["u_hint"] = {
-                "flagcount": len([None for _pos in deduced if game.answer_board.get_type(_pos) == "F"]),
-                "emptycount": len([None for _pos in deduced if game.answer_board.get_type(_pos) == "C"]),
+                "flagcount": len([
+                    None for _pos in deduced if (
+                        game.answer_board.get_type(_pos) == "F" and
+                        _pos.board_key in game.answer_board.get_interactive_keys()
+                    )]),
+                "emptycount": len([
+                    None for _pos in deduced if (
+                        game.answer_board.get_type(_pos) == "C" and
+                        _pos.board_key in game.answer_board.get_interactive_keys()
+                    )]),
                 "markcount": len([None for _pos in deduced if _pos.board_key not in game.board.get_interactive_keys()])
             }
 
