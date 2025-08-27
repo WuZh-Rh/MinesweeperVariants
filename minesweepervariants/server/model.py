@@ -252,6 +252,24 @@ class Model():
             _board = game.click(pos)
         elif data["button"] == "right":
             _board = game.mark(pos)
+        elif data["button"] == "Space":
+            count = self.get_count()
+            refresh = {
+                "gameover": False,
+                "success": True,
+                "reason": "",
+                "count": self.get_count(),
+                "cells": cells,
+                "noFail": self.noFail,
+                "noHint": self.noHint,
+            }
+            if count["remains"] in (0, count["unknown"]):
+                for pos, _ in self.game.board("N"):
+                    self.game.board[pos] = self.game.answer_board[pos]
+                refresh["gameover"] = True
+                refresh["win"] = True
+                refresh["count"] = self.get_count()
+            return refresh
         else:
             _board = None
         print(f"[click] end click used time:{time.time() - t}s")
@@ -267,6 +285,7 @@ class Model():
             elif data["button"] == "right":
                 reason = "你标记了一个错误的雷"
                 unbelievable = game.unbelievable(pos, 1)
+
             if unbelievable is None:
                 raise RuntimeError
             self.noFail = False
