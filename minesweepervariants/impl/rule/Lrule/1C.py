@@ -50,7 +50,6 @@ class Rule1C(AbstractMinesRule):
     def create_constraints(self, board, switch):
         model = board.get_model()
         connect(
-            ub=get_total() // 2 + 1,
             model=model,
             board=board,
             connect_value=1,

@@ -63,10 +63,10 @@ class Rule1X(AbstractClueRule):
             self.neibor_bool = []
             return
         datas = data.split(";")
-        nei_values = []
+        nei_values: list[int] = []
         for nei_value in datas:
             if ":" in nei_value:
-                nei_values.append(tuple([
+                nei_values.extend(tuple([
                     i for i in range(
                         int(nei_value.split(":")[0]),
                         int(nei_value.split(":")[1])+1
