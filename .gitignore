@@ -25,6 +25,7 @@ __pycache__/
 data/bot_prompt.txt
 diff_from_mainCSP.patch
 github.bat
+server.bat
 TODO.md
 
 .vscode/
