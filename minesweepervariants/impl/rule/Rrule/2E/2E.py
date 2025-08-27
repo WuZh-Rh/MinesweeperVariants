@@ -86,7 +86,6 @@ class Value2E(AbstractClueValue):
         line = board.batch(board.get_col_pos(
             board.get_pos(0, self.value, NAME_2E)
         ), mode="type")
-        print(line)
         if "F" in line:
             return Number(line.index("F"))
         return Number("ABCDEFGHI"[self.value])
