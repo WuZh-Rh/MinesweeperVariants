@@ -1,6 +1,6 @@
 [project]
 name = "minesweepervariants"
-version = "0.1.1"
+version = "0.2.0"
 description = ""
 authors = [
     {name = "WuZh-Rh",email = "you@example.com"},
