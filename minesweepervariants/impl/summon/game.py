@@ -455,18 +455,13 @@ class GameSession:
             return self.last_deduced[1]
         # 如果是终极模式
         if self.mode == ULTIMATE:
-            flag = True
-            for pos, obj in self.board("CF"):
-                if pos in self.last_deduced[1]:
-                    self.last_deduced[1].remove(pos)
-                if obj in [
-                    self.clue_tag, self.flag_tag,
-                    None, VALUE_QUESS, MINES_TAG
-                ]:
-                    continue
-                if self.last_deduced[0] is None:
-                    flag = False
+            flag = False
+            for pos in self.last_deduced[1][:]:
+                if self.board[pos] is None:
+                    flag = True
                     break
+                else:
+                    self.last_deduced[1].remove(pos)
             if flag:
                 return self.last_deduced[1]
             print("is step")
@@ -507,7 +502,6 @@ class GameSession:
             return {}
 
         deduced = self.deduced()
-        print(deduced, thread)
         if not deduced and thread:
             return {}
         if not deduced and self.mode != ULTIMATE:
