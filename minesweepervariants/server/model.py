@@ -280,11 +280,12 @@ class Model():
                     if obj is None and board[pos] is None:
                         continue
                     if (
-                            not (obj is None or board[pos] is None) and
-                            obj.type() == board[pos].type() and
-                            obj.code() == board[pos].code() and
-                            obj.high_light(_board) == board[pos].high_light(board) and
-                            obj.invalid(_board) == board[pos].invalid(board)
+                        not (obj is None or board[pos] is None) and
+                        obj.type() == board[pos].type() and
+                        obj.code() == board[pos].code() and
+                        obj.high_light(_board) == board[pos].high_light(board) and
+                        obj.invalid(_board) == board[pos].invalid(board) and
+                        obj.web_component == board[pos].web_component
                     ):
                         continue
 
