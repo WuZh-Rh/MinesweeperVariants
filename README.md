@@ -2,7 +2,7 @@
 
 ## **版本：1.3**
 
-**14 Minesweeper Variants（简称 14mv）** 是一款扫雷变体的解谜游戏生成器。
+**14 Minesweeper Variants（简称 14mv）** 是一款扫雷变体的解谜游戏生成器+游戏服务器(前端项目请使用[Minesweeper Variants-Vue](https://koolshow.github.io/MinesweeperVariants-Vue/))。
 支持多种扫雷规则组合，可生成具有**唯一解**的纸笔类谜题。
 
 ---
@@ -32,6 +32,7 @@ python -m pip install minesweepervariants
 
 ```bash
 python -m minesweepervariants.server
+# 运行后不要关闭, 请在浏览器内打开https://koolshow.github.io/MinesweeperVariants-Vue/
 ```
 
 运行生成脚本（生成题板/使用命令行工具）：
