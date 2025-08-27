@@ -7,11 +7,50 @@
 """
 [1X] 十字 (Cross)：线索表示半径为 2 的十字范围内的雷数
 """
+from typing import List
+
 from minesweepervariants.impl.summon.solver import Switch
 from ....abs.Rrule import AbstractClueRule, AbstractClueValue
 from ....abs.board import AbstractBoard, AbstractPosition
 
 from ....utils.impl_obj import VALUE_QUESS, MINES_TAG
+
+
+def encode_bools_7bit(bools: list[bool]) -> bytes:
+    """
+    将布尔列表转换为字节，每7个布尔值转换为1个字节
+    参数:
+        bool_list: 布尔值列表
+    返回:
+        bytes: 转换后的字节对象
+    """
+    bools = [False] * (7 - len(bools) % 7) + bools
+    byte_array = bytearray()
+
+    # 每7个布尔值处理为一个字节
+    for i in range(0, len(bools), 7):
+        group = bools[i:i + 7]
+        byte_val = 0
+
+        # 将7个布尔值转换为一个字节
+        for j, bit in enumerate(group):
+            if bit:
+                byte_val |= 1 << (6 - j)  # 设置相应的位
+
+        byte_array.append(byte_val)
+
+    return bytes(byte_array)
+
+
+def decode_bools_7bit(data: bytes) -> list[bool]:
+    # 解码所有数据，每个字节转换为7个布尔值
+    bools = []
+    for byte in data:
+        for shift in range(6, -1, -1):
+            bit = (byte >> shift) & 1
+            bools.append(bool(bit))
+
+    return bools
 
 
 class Rule1X(AbstractClueRule):
@@ -20,61 +59,57 @@ class Rule1X(AbstractClueRule):
 
     def __init__(self, board: "AbstractBoard" = None, data=None) -> None:
         super().__init__(board, data)
-        self.nei_values = []
         if data is None:
-            self.nei_values = [tuple([1, 1]), tuple([4, 4])]
+            self.neibor_bool = []
             return
-        nei_values = data.split(";")
-        for nei_value in nei_values:
+        datas = data.split(";")
+        nei_values = []
+        for nei_value in datas:
             if ":" in nei_value:
-                self.nei_values.append(tuple([
-                    int(nei_value.split(":")[0]),
-                    int(nei_value.split(":")[1])
+                nei_values.append(tuple([
+                    i for i in range(
+                        int(nei_value.split(":")[0]),
+                        int(nei_value.split(":")[1])+1
+                    )
                 ]))
             else:
-                self.nei_values.append(tuple([int(nei_value)]))
-
-    def nei_pos(self, pos: AbstractPosition):
-        positions = []
-        for nei_value in self.nei_values:
-            if len(nei_value) == 1:
-                positions.extend(
-                    pos.neighbors(nei_value[0], nei_value[0])
-                )
-            elif len(nei_value) == 2:
-                positions.extend(
-                    pos.neighbors(nei_value[0], nei_value[1])
-                )
-        return positions
+                nei_values.append(int(nei_value))
+        if not nei_values:
+            return
+        max_value = max(nei_values)
+        self.neibor_bool = [False for _ in range(max_value)]
+        for i in nei_values:
+            if i == 0:
+                continue
+            self.neibor_bool[max_value-i] = True
 
     def fill(self, board: 'AbstractBoard') -> 'AbstractBoard':
+        code = b'\x00' + encode_bools_7bit(self.neibor_bool)
         for pos, _ in board("N"):
-            value = len([_pos for _pos in self.nei_pos(pos) if board.get_type(_pos) == "F"])
-            obj = Value1X(pos, count=value)
-            obj.neighbor = self.nei_pos(pos)
+            obj = Value1X(pos, code)
+            value = len([_pos for _pos in obj.neighbor if board.get_type(_pos) == "F"])
+            obj.value = value
             board.set_value(pos, obj)
         return board
 
-    def create_constraints(self, board: 'AbstractBoard', switch: 'Switch'):
-        for pos, obj in board():
-            if not isinstance(obj, Value1X):
-                continue
-            obj.neighbor = self.nei_pos(pos)
-
 
 class Value1X(AbstractClueValue):
-    def __init__(self, pos: AbstractPosition, count: int = 0, code: bytes = None):
+    def __init__(self, pos: AbstractPosition, code: bytes = None):
         super().__init__(pos, code)
-        if code is not None:
-            # 从字节码解码
-            self.count = code[0]
+        self.value, self.data = code[0], code[1:]
+        if self.data is b'':
+            data = b'\x09'
         else:
-            # 直接初始化
-            self.count = count
+            data = self.data
+        bool_list = decode_bools_7bit(data)
         self.neighbor = []
+        for n, b in enumerate(bool_list[::-1]):
+            if not b:
+                continue
+            self.neighbor.extend(self.pos.neighbors(n + 1, n + 1))
 
     def __repr__(self):
-        return f"{self.count}"
+        return f"{self.value}"
 
     def high_light(self, board: 'AbstractBoard') -> list['AbstractPosition']:
         return self.neighbor
@@ -84,7 +119,7 @@ class Value1X(AbstractClueValue):
         return Rule1X.name[0].encode("ascii")
 
     def code(self) -> bytes:
-        return bytes([self.count])
+        return bytes([self.value]) + self.data
 
     def deduce_cells(self, board: 'AbstractBoard') -> bool:
         type_dict = {"N": [], "F": []}
@@ -97,11 +132,11 @@ class Value1X(AbstractClueValue):
         f_num = len(type_dict["F"])
         if n_num == 0:
             return False
-        if f_num == self.count:
+        if f_num == self.value:
             for i in type_dict["N"]:
                 board.set_value(i, VALUE_QUESS)
             return True
-        if f_num + n_num == self.count:
+        if f_num + n_num == self.value:
             for i in type_dict["N"]:
                 board.set_value(i, MINES_TAG)
             return True
@@ -121,4 +156,4 @@ class Value1X(AbstractClueValue):
 
         # 添加约束：周围雷数等于count
         if neighbor_vars:
-            model.Add(sum(neighbor_vars) == self.count).OnlyEnforceIf(s)
+            model.Add(sum(neighbor_vars) == self.value).OnlyEnforceIf(s)
