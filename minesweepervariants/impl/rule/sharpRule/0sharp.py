@@ -14,10 +14,10 @@ from . import AbstractClueSharp
 
 class Rule0Sharp(AbstractClueSharp):
     name = ["0#", "标签", "Tag"]
-    doc = "包含以下规则：[V], [1L], [1N], [1X], [1X'], [1K], [1E'], [1L1M], [1M1N], [1N1X], [2D], [2M], [2X']。线索值只有零。"
+    doc = "包含以下规则 [1L], [1N], [1E'], [1M1N], [1N1X], [2M], [2X']。线索值只有零。"
 
     def __init__(self, board: "AbstractBoard" = None, data=None) -> None:
-        rules_name = ["V", "1L", "1N", "1X", "1X'", "1K", "1E'", "1L1M", "1M1N", "1N1X", "2D", "2M", "2X'"]
+        rules_name = ["1L", "1N", "1E'", "1M1N", "1N1X", "2M", "2X'"]
         super().__init__(rules_name, board, data)
         self.rules = data
 
