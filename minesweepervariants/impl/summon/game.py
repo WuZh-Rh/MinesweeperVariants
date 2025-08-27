@@ -406,6 +406,7 @@ class GameSession:
                 self.step()
                 if self.drop_r and not self.deduced():
                     self.drop_r = False
+                    self.last_deduced[0] = None
                 self.thread_deduced()
             elif not [_pos for _pos in self.last_deduced[1] if _pos != pos]:
                 print("last1 unfind")
@@ -454,7 +455,7 @@ class GameSession:
         if self.last_deduced[0] == self.board:
             return self.last_deduced[1]
         # 如果是终极模式
-        if self.mode == ULTIMATE:
+        if self.mode == ULTIMATE and not self.last_deduced[1]:
             flag = False
             for pos in self.last_deduced[1][:]:
                 if self.board[pos] is None:
