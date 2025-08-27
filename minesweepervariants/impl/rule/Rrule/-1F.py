@@ -49,8 +49,9 @@ class Valuex1F(AbstractClueValue):
 
     def create_constraints(self, board: 'AbstractBoard', switch: 'Switch'):
         model = board.get_model()
+        s = switch.get(model, self)
         pos = self.pos.clone()
         pos.x, pos.y = pos.y, pos.x
         var_list = board.batch(pos.neighbors(2), mode="variable", drop_none=True)
-        model.Add(sum(var_list) == self.value)
+        model.Add(sum(var_list) == self.value).OnlyEnforceIf(s)
 
