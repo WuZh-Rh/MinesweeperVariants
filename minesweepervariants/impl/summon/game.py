@@ -447,7 +447,27 @@ class GameSession:
         print("step")
         # 没有可推格了
         # TODO 检查终极的+F+S
-        if self.deduced():
+        flag = False
+        if self.ultimate_mode & ULTIMATE_F:
+            for pos in self.deduced():
+                if self.answer_board.get_type(pos) != "F":
+                    continue
+                flag = True
+                break
+        if self.ultimate_mode & ULTIMATE_S:
+            for pos in self.deduced():
+                if pos.board_key in self.board.get_interactive_keys():
+                    continue
+                flag = True
+                break
+        for pos in self.deduced():
+            if pos.board_key not in self.board.get_interactive_keys():
+                continue
+            if self.answer_board.get_type(pos) == "F":
+                continue
+            flag = True
+            break
+        if flag:
             return
         for key in self.board.get_board_keys():
             for pos, obj in self.board(key=key):
@@ -514,7 +534,7 @@ class GameSession:
         if not deduced and self.mode != ULTIMATE:
             self.logger.error("题板无可推格")
             return {}
-        if not deduced:
+        if self.mode == ULTIMATE and not deduced:
             _board = self.board.clone()
             self.step()
             positions = []
