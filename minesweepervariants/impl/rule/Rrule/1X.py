@@ -24,6 +24,8 @@ def encode_bools_7bit(bools: list[bool]) -> bytes:
     返回:
         bytes: 转换后的字节对象
     """
+    if len(bools) == 0:
+        return b''
     bools = [False] * (7 - len(bools) % 7) + bools
     byte_array = bytearray()
 
@@ -97,12 +99,13 @@ class Value1X(AbstractClueValue):
     def __init__(self, pos: AbstractPosition, code: bytes = None):
         super().__init__(pos, code)
         self.value, self.data = code[0], code[1:]
-        if self.data is b'':
-            data = b'\x09'
+        if self.data == b'':
+            bool_list = [True, False, False, True]
         else:
             data = self.data
-        bool_list = decode_bools_7bit(data)
+            bool_list = decode_bools_7bit(data)
         self.neighbor = []
+        print(bool_list)
         for n, b in enumerate(bool_list[::-1]):
             if not b:
                 continue
