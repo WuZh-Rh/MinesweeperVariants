@@ -11,6 +11,8 @@
 """
 from typing import List, Dict
 
+from minesweepervariants.utils.web_template import StrWithArrow
+
 from ....abs.Rrule import AbstractClueRule, AbstractClueValue
 from ....abs.board import AbstractBoard, AbstractPosition
 from ....utils.image_create import get_image, get_text, get_row, get_col, get_dummy
@@ -85,16 +87,7 @@ class Value3A(AbstractClueValue):
         return f"{self.value}{'^>v<'[self.dir]}"
 
     def web_component(self, board) -> Dict:
-        if self.dir in [3, 1]:
-            return get_col(
-                get_text("↑→↓←"[self.dir]),
-                get_text(str(self.value))
-            )
-        else:
-            return get_row(
-                get_text("↑→↓←"[self.dir]),
-                get_text(str(self.value))
-            )
+        return StrWithArrow(str(self.value), ["up", "right", "down", "left"][self.dir])
 
     def compose(self, board) -> Dict:
         match self.dir:
