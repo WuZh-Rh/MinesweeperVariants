@@ -7,8 +7,10 @@
 """
 [2E]加密: 线索被字母所取代，每个字母对应一个线索，且每个线索对应一个字母
 """
-from typing import List
+from typing import List, Dict
 
+from minesweepervariants.utils.image_create import get_text
+from minesweepervariants.utils.web_template import Number
 from .....abs.board import AbstractBoard, AbstractPosition
 from .....abs.Rrule import AbstractClueRule, AbstractClueValue
 from .....utils.impl_obj import VALUE_QUESS, VALUE_CROSS, VALUE_CIRCLE
@@ -79,6 +81,23 @@ class Value2E(AbstractClueValue):
 
     def __repr__(self) -> str:
         return "ABCDEFGHI"[self.value]
+
+    def web_component(self, board) -> Dict:
+        line = board.batch(board.get_col_pos(
+            board.get_pos(0, self.value, NAME_2E)
+        ), mode="type")
+        print(line)
+        if "F" in line:
+            return Number(line.index("F"))
+        return Number("ABCDEFGHI"[self.value])
+
+    def compose(self, board) -> Dict:
+        line = board.batch(board.get_col_pos(
+            board.get_pos(0, self.value, NAME_2E)
+        ), mode="type")
+        if "F" in line:
+            return get_text(str(line.index("F")))
+        return get_text("ABCDEFGHI"[self.value])
 
     def high_light(self, board: 'AbstractBoard') -> List['AbstractPosition']:
         return self.neighbors
