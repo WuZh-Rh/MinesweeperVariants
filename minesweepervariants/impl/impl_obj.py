@@ -8,7 +8,6 @@ import os
 import sys
 import importlib.util
 from pathlib import Path
-from turtle import st
 from typing import Optional
 
 from minesweepervariants.utils.tool import get_logger
