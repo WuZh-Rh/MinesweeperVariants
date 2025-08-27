@@ -369,10 +369,16 @@ class GameSession:
             elif self.mode in [ULTIMATE, PUZZLE]:
                 # 如果是纸笔和专家就放标志
                 for _pos in chord_positions:
-                    if self.answer_board.get_type(_pos) == "F":
+                    if _pos.board_key not in self.board.get_interactive_keys():
+                        if self.answer_board.get_type(_pos) == "C":
+                            self.board[_pos] = self.board.get_config(_pos.board_key, "VALUE")
+                        elif self.answer_board.get_type(_pos) == "F":
+                            self.board[_pos] = self.board.get_config(_pos.board_key, "MINES")
+                    elif self.answer_board.get_type(_pos) == "F":
                         self.board[_pos] = self.flag_tag
                     elif self.answer_board.get_type(_pos) == "C":
                         self.board[_pos] = self.clue_tag
+
         elif self.mode == NORMAL:
             # 普通模式
             if not action and self.answer_board.get_type(pos) == "F":
@@ -397,9 +403,14 @@ class GameSession:
                 self.board[pos] = self.answer_board[pos]
         else:
             return None
+        if pos.board_key not in self.board.get_interactive_keys():
+            if self.board[pos] is self.clue_tag:
+                self.board[pos] = self.board.get_config(pos.board_key, "VALUE")
+            elif self.board[pos] is self.flag_tag:
+                self.board[pos] = self.board.get_config(pos.board_key, "MINES")
         if (
-                self.mode in [ULTIMATE] and
-                self.ultimate_mode & ULTIMATE_A
+            self.mode in [ULTIMATE] and
+            self.ultimate_mode & ULTIMATE_A
         ):
             if self.last_deduced[0] != _board:
                 print("last0 uneq board")
@@ -455,17 +466,12 @@ class GameSession:
         if self.last_deduced[0] == self.board:
             return self.last_deduced[1]
         # 如果是终极模式
-        if self.mode == ULTIMATE and not self.last_deduced[1]:
-            flag = False
+        if self.mode == ULTIMATE and self.last_deduced[1]:
             for pos in self.last_deduced[1][:]:
-                if self.board[pos] is None:
-                    flag = True
-                    break
-                else:
+                if self.board[pos] is not None:
                     self.last_deduced[1].remove(pos)
-            if flag:
+            if self.last_deduced[1]:
                 return self.last_deduced[1]
-            print("is step")
         self.deduced_queue.put("process")  # 请求处理权
         try:
             t = time.time()
