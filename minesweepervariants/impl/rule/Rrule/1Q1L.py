@@ -5,7 +5,7 @@
 # @Author  : Wu_RH
 # @FileName: 1Q1L.py
 """
-[QL]误差无方(扫联会):误差线索比真实值大1或小1，如果线索处在2*2非雷框内，则它是误差线索，反之则是真实值。
+[QL]误差无方:误差线索比真实值大1或小1，如果线索处在2*2非雷框内，则它是误差线索，反之则是真实值。
 """
 
 from typing import List
@@ -28,7 +28,7 @@ def block(a_pos: AbstractPosition, board: AbstractBoard) -> List[AbstractPositio
 
 
 class Rule1Q1L(AbstractClueRule):
-    name = ["QL", "1Q1L", "误差无方(扫联会)"]
+    name = ["QL", "1Q1L", "误差无方"]
     doc = "误差线索比真实值大1或小1，如果线索处在2*2非雷框内，则它是误差线索，反之则是真实值。"
 
     def fill(self, board: 'AbstractBoard') -> 'AbstractBoard':
