@@ -6,7 +6,7 @@
 """
 from typing import Dict
 
-from minesweepervariants.utils.web_template import Number
+from minesweepervariants.utils.web_template import Number, StrWithArrow
 from ....abs.Rrule import AbstractClueRule, AbstractClueValue
 from ....abs.board import AbstractBoard, AbstractPosition
 
@@ -220,6 +220,14 @@ class Value1E(AbstractClueValue):
                 get_text(str(self.value)),
                 get_dummy(width=0.15),
             )
+    def web_component(self, board) -> Dict:
+        if self.value == 0:
+            return Number(0)
+        if self.value < 0:
+            return StrWithArrow(str(-self.value), "left_right")
+        if self.value > 0:
+            return StrWithArrow(str(self.value), "up_down")
+
 
     def compose(self, board):
         if self.value == 0:
