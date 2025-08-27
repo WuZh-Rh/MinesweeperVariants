@@ -17,9 +17,11 @@ from minesweepervariants.utils.impl_obj import get_seed, VALUE_QUESS, MINES_TAG
 from minesweepervariants.utils.tool import hash_str
 
 from .format import format_board, format_cell, format_gamemode
-from ._typing import CellType, CellState, Board, ClickData, CountInfo, ComponentTemplate, ComponentConfig, CellConfig, BoardMetadata, CreateGameParams, GenerateBoardResult, ResponseType, U_Hint, ClickResponse
+from ._typing import CellType, CellState, Board, ClickData, CountInfo, ComponentTemplate, ComponentConfig, CellConfig, \
+    BoardMetadata, CreateGameParams, GenerateBoardResult, ResponseType, U_Hint, ClickResponse
 
 __all__ = ["Model"]
+
 
 @dataclass(slots=True)
 class Model():
@@ -176,7 +178,6 @@ class Model():
         print("[new]", data)
         return data, 200
 
-
     def metadata(self) -> ResponseType[BoardMetadata]:
         board_data: BoardMetadata
         print("[metadata] start")
@@ -185,7 +186,7 @@ class Model():
             game = self.get_game()
         except RuntimeError as e:
             print("[metadata]", e)
-            return {}, 200 # type: ignore
+            return {}, 200  # type: ignore
 
         board = game.board
 
@@ -202,11 +203,19 @@ class Model():
             "noHint": self.noHint,
             "u_mode": u_mode,
             "boards": boards,
-            "cells": cells
+            "cells": cells,
         }
+
+        if game.mode == ULTIMATE:
+            deduced = game.deduced()
+            board_data["u_hint"] = {
+                "flagcount": len([None for _pos in deduced if game.answer_board.get_type(_pos) == "F"]),
+                "emptycount": len([None for _pos in deduced if game.answer_board.get_type(_pos) == "C"]),
+                "markcount": len([None for _pos in deduced if _pos.board_key not in game.board.get_interactive_keys()])
+            }
+
         print("[metadata]", board_data)
         return board_data
-
 
     def click(self) -> ResponseType[ClickResponse]:
         refresh: ClickResponse
@@ -220,14 +229,6 @@ class Model():
         print("[click] data:", data)
 
         game: Game = self.get_game()
-        u_hint: U_Hint | None = None
-        if game.mode == ULTIMATE:
-            deduced = game.deduced()
-            u_hint = {
-                "flagcount": len([None for _pos in deduced if game.answer_board.get_type(_pos) == "F"]),
-                "emptycount": len([None for _pos in deduced if game.answer_board.get_type(_pos) == "C"]),
-                "markcount": len([None for _pos in deduced if _pos.board_key not in game.board.get_interactive_keys()])
-            }
 
         board = game.board.clone()
         pos = board.get_pos(data["x"], data["y"], data["boardName"])
@@ -260,30 +261,22 @@ class Model():
             print("[click] *unbelievable*", unbelievable)
             mines: list[CellType] = [
                 {"x": _pos.x, "y": _pos.y,
-                "boardname": _pos.board_key}
+                 "boardname": _pos.board_key}
                 for _pos in unbelievable
             ]
             gameover = True
             win = False
         else:
-            if u_hint is not None:
-                if pos.board_key in board.get_interactive_keys():
-                    if data["button"] == "left":
-                        u_hint["flagcount"] -= 1
-                    elif data["button"] == "right":
-                        u_hint["emptycount"] -= 1
-                else:
-                    u_hint["markcount"] -= 1
             for key in _board.get_board_keys():
                 for pos, obj in _board(key=key):
                     if obj is None and board[pos] is None:
                         continue
                     if (
-                        not (obj is None or board[pos] is None) and
-                        obj.type() == board[pos].type() and
-                        obj.code() == board[pos].code() and
-                        obj.high_light(_board) == board[pos].high_light(board) and
-                        obj.invalid(_board) == board[pos].invalid(board)
+                            not (obj is None or board[pos] is None) and
+                            obj.type() == board[pos].type() and
+                            obj.code() == board[pos].code() and
+                            obj.high_light(_board) == board[pos].high_light(board) and
+                            obj.invalid(_board) == board[pos].invalid(board)
                     ):
                         continue
 
@@ -293,19 +286,19 @@ class Model():
                         _board.get_config(key, "VALUE"),
                     ]
                     label = (
-                        _board.get_config(key, "by_mini") and
-                        label and
-                        not (
-                            isinstance(obj, ValueAsterisk) or
-                            isinstance(obj, MinesAsterisk)
-                        )
+                            _board.get_config(key, "by_mini") and
+                            label and
+                            not (
+                                    isinstance(obj, ValueAsterisk) or
+                                    isinstance(obj, MinesAsterisk)
+                            )
                     )
                     data = format_cell(_board, pos, label)
                     print("[click]", pos, obj, data)
                     cells.append(data)
             if not any(
-                _board.has("N", key=key) for
-                key in _board.get_interactive_keys()
+                    _board.has("N", key=key) for
+                    key in _board.get_interactive_keys()
             ):
                 gameover = True
                 reason = "你过关!!!(震声)"
@@ -329,15 +322,18 @@ class Model():
             if not win:
                 refresh["mines"] = mines
 
-        if u_hint is not None:
-            refresh["u_hint"] = u_hint
+        if game.mode == ULTIMATE:
+            deduced = game.deduced()
+            refresh["u_hint"] = {
+                "flagcount": len([None for _pos in deduced if game.answer_board.get_type(_pos) == "F"]),
+                "emptycount": len([None for _pos in deduced if game.answer_board.get_type(_pos) == "C"]),
+                "markcount": len([None for _pos in deduced if _pos.board_key not in game.board.get_interactive_keys()])
+            }
 
         print("[click] refresh: " + str(refresh))
         return refresh, 200
 
-
     def hint_post(self):
-
         game = self.game
         print("[hint] hint start")
         t = time.time()
@@ -421,12 +417,12 @@ class Model():
                 game.board.get_config(pos.board_key, "VALUE"),
             ]
             label = (
-                game.board.get_config(pos.board_key, "by_mini") and
-                label and
-                not (
-                        isinstance(obj, ValueAsterisk) or
-                        isinstance(obj, MinesAsterisk)
-                )
+                    game.board.get_config(pos.board_key, "by_mini") and
+                    label and
+                    not (
+                            isinstance(obj, ValueAsterisk) or
+                            isinstance(obj, MinesAsterisk)
+                    )
             )
             cells.append(
                 format_cell(game.board, pos, label)
@@ -457,7 +453,6 @@ class Model():
             "rules": rules_info,
             "dye": get_all_dye()  # {dye_name: doc, minesweepervariants..}
         }
-
 
     def reset(self):
 

@@ -30,11 +30,13 @@ from minesweepervariants.config.config import DEFAULT_CONFIG
 CONFIG = {}
 CONFIG.update(DEFAULT_CONFIG)
 
+
 class Mode(Enum):
     NORMAL = 0  # 普通模式
     EXPERT = 1  # 专家模式
     ULTIMATE = 2  # 终极模式
     PUZZLE = 3  # 纸笔模式(用于调试)
+
 
 class UMode(Flag):
     ULTIMATE_A = 1
@@ -42,6 +44,7 @@ class UMode(Flag):
     ULTIMATE_S = 4
     ULTIMATE_R = 8
     ULTIMATE_P = 16
+
 
 NORMAL = Mode.NORMAL
 EXPERT = Mode.EXPERT
@@ -122,7 +125,6 @@ class Manger:
 
 
 class GameSession:
-
     flag_tag: Any
     clue_tag: Any
 
@@ -396,8 +398,8 @@ class GameSession:
         else:
             return None
         if (
-            self.mode in [ULTIMATE] and
-            self.ultimate_mode & ULTIMATE_A
+                self.mode in [ULTIMATE] and
+                self.ultimate_mode & ULTIMATE_A
         ):
             if self.last_deduced[0] != _board:
                 print("last0 uneq board")
@@ -451,9 +453,27 @@ class GameSession:
         """
         if self.last_deduced[0] == self.board:
             return self.last_deduced[1]
+        # 如果是终极模式
+        if self.mode == ULTIMATE:
+            flag = True
+            for pos, obj in self.board("CF"):
+                if pos in self.last_deduced[1]:
+                    self.last_deduced[1].remove(pos)
+                if obj in [
+                    self.clue_tag, self.flag_tag,
+                    None, VALUE_QUESS, MINES_TAG
+                ]:
+                    continue
+                if self.last_deduced[0] is None:
+                    flag = False
+                    break
+            if flag:
+                return self.last_deduced[1]
+            print("is step")
         self.deduced_queue.put("process")  # 请求处理权
         try:
             t = time.time()
+            self.logger.debug(f"deduced start (last: {str(self.last_deduced[1])})")
             deduced = []
             board = self.board.clone()
             for pos in self.last_deduced[1]:

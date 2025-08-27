@@ -10,6 +10,8 @@ from typing import Dict, Union
 
 
 def extract_module_docstring(filepath) -> Union[Dict, None]:
+    if "sharp" in filepath:
+        print(filepath)
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             source = f.read()
@@ -37,11 +39,11 @@ def extract_module_docstring(filepath) -> Union[Dict, None]:
                 bases_info.append(str(base))
 
         x = 0
-        if any("MinesRule" in b for b in bases_info):
+        if any("Mines" in b for b in bases_info):
             x |= 1
-        if any("MinesClueRule" in b for b in bases_info):
+        if any("MinesClue" in b for b in bases_info):
             x |= 2
-        if any("ClueRule" in b for b in bases_info):
+        if any("Clue" in b for b in bases_info):
             x |= 4
 
         if x == 6:
