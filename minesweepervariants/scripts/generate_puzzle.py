@@ -50,7 +50,9 @@ def main(
     _board = None
     info_list = []
     print(rule_code)
-    for attempt_index in range(attempts):
+    attempt_index = 0
+    while attempts == -1 or attempt_index < attempts:
+        attempt_index += 1
         s = Summon(size=size, total=total, rules=rule_code[:], board=board_class,
                    drop_r=drop_r, mask=mask_dye, dye=dye, vice_board=vice_board)
         if unseed:
