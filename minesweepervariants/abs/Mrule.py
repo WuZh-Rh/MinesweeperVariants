@@ -66,11 +66,8 @@ class AbstractMinesValue(AbstractValue, ABC):
         """
         if "compose" in type(self).__dict__:
             return self.compose(board)
-        if self.__repr__().isnumeric():
-            data = Number(int(self.__repr__()))
-            data["style"] += ""
-            return data
-        return get_text(self.__repr__())
+        data = Number(self.__repr__())
+        return data
 
 
 # --------实例类-------- #

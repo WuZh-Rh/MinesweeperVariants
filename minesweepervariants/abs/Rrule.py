@@ -61,9 +61,7 @@ class AbstractClueValue(AbstractValue, ABC):
         """
         if "compose" in type(self).__dict__:
             return self.compose(board)
-        if self.__repr__().isnumeric():
-            return Number(int(self.__repr__()))
-        return get_text(self.__repr__())
+        return Number(self.__repr__())
 
 
 # --------实例类-------- #

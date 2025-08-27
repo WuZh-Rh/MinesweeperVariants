@@ -81,7 +81,6 @@ def init_component(data: dict, *, color: str = '--primary-color', invalid: bool 
 
 def format_cell(_board, pos, label):
     obj = _board[pos]
-    dye = _board.get_dyed(pos)
     color = "--flag-color" if _board.get_type(pos) == "F" else "--foreground-color"
     invalid = False if obj is None else obj.invalid(_board)
     cell_data = init_component({
@@ -94,7 +93,31 @@ def format_cell(_board, pos, label):
                            f" flex: 1; min-width: 0;")
     # if dye:
     #     cell_data["style"] += " background-color: rgb(from var(--foreground-color) r g b / 29%);"
-
+    if (
+        _board.get_config(pos.board_key, "pos_label") and
+        (
+            _board.get_type(pos) == "C" or
+            _board.get_type(pos) == "N"
+        )
+    ):
+        txt = chr(64 + pos.y // 26) if pos.y > 25 else ''
+        txt += chr(65 + pos.y % 26)
+        txt += f"={pos.x}"
+        cell_data = {
+            "type": "container",
+            "value": [
+                cell_data,
+                {
+                    "type": "template",
+                    "style": "",
+                    "value": {
+                        "name": "backgroundStr",
+                        "value": txt
+                    },
+                }
+            ],
+            "style": ""
+        }
     VALUE = _board.get_config(pos.board_key, "VALUE")
     MINES = _board.get_config(pos.board_key, "MINES")
     if obj in [VALUE, MINES, None]:

@@ -1,20 +1,20 @@
-def Number(n: int | float):
+def Number(n: int | float | str):
     return {
         'type': 'template',
         'style': '',
         'value': {
-            'name': 'number',
+            'name': 'str',
             'value': n
         }
     }
 
 
-def MultiNumber(n: list[int | float]):
+def MultiNumber(n: list[int | float | str]):
     return {
         'type': 'template',
         'style': '',
         'value': {
-            'name': 'multiNumber',
+            'name': 'multiStr',
             'value': n
         }
     }
