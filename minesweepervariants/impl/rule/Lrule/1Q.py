@@ -18,7 +18,7 @@ def parse(s: str) -> list[tuple[int, int]]:
     result = [(0,0)]
     for part in s.split(";"):
         x = part.count("R") - part.count("L")
-        y = part.count("D") - part.count("U")
+        y = part.count("U") - part.count("D")
         result.append((x, y))
     return result
 
