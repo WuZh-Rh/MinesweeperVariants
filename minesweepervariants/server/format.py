@@ -197,6 +197,28 @@ def format_board(_board: AbstractBoard):
             })
         for pos, obj in _board(key=key):
             if obj is None:
+                if _board.get_config(key, "pos_label"):
+                    txt = chr(64 + pos.y // 26) if pos.y > 25 else ''
+                    txt += chr(65 + pos.y % 26)
+                    txt += f"={pos.x}"
+                    cells.append({
+                        "type": "",
+                        "position": {
+                            "x": pos.x, "y": pos.y,
+                            "boardname": pos.board_key
+                        },
+                        "component": {
+                            "type": "template",
+                            "style": "",
+                            "value": {
+                                "name": "backgroundStr",
+                                "value": txt
+                            },
+                        },
+                        "highlight": {},
+                        "clickable": True,
+                        "overlayText": ""
+                    })
                 continue
             label = obj not in [
                 VALUE_QUESS, MINES_TAG,
