@@ -218,9 +218,13 @@ class Model():
                     None for _pos in deduced if (
                         game.answer_board.get_type(_pos) == "C" and
                         _pos.board_key in game.answer_board.get_interactive_keys()
-                    )]),
-                "markcount": len([None for _pos in deduced if _pos.board_key not in game.board.get_interactive_keys()])
+                    )])
             }
+            if [key for key in board.get_board_keys() if key not in board.get_interactive_keys()]:
+                board_data["u_hint"]["markcount"] = len([
+                    None for _pos in deduced
+                    if _pos.board_key not in game.board.get_interactive_keys()
+                ])
 
         print("[metadata]", board_data)
         return board_data
@@ -344,8 +348,12 @@ class Model():
                         game.answer_board.get_type(_pos) == "C" and
                         _pos.board_key in game.answer_board.get_interactive_keys()
                     )]),
-                "markcount": len([None for _pos in deduced if _pos.board_key not in game.board.get_interactive_keys()])
             }
+            if [key for key in board.get_board_keys() if key not in board.get_interactive_keys()]:
+                refresh["u_hint"]["markcount"] = len([
+                    None for _pos in deduced
+                    if _pos.board_key not in game.board.get_interactive_keys()
+                ])
 
         print("[click] refresh: " + str(refresh))
         return refresh, 200
