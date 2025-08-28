@@ -11,8 +11,9 @@ from . import AbstractDye
 class DyeC(AbstractDye):
     name = "q" # quadrant
     fullname = "2x2棋盘格染色"
-    doc =   "args: [[x][,[y]];][w][,[h]][;[px][,[py]]][;[bx][,[by]]]\n" \
+    doc =   "args: [~][[x][,[y]];][w][,[h]][;[px][,[py]]][;[bx][,[by]]]\n" \
             "bbox(x,y;w,h;px,py;bx,by)\n" \
+            "~: 反转染色\n" \
             "x: x偏移 y: y偏移\n" \
             "w: 宽度 h: 高度\n" \
             "px: x方向的间隔 py: y方向的间隔\n" \
