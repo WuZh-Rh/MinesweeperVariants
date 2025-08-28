@@ -495,10 +495,20 @@ class Model():
                     zh_name,
                     all_rules[key][name]["doc"]
                 ]
-        return {
-            "rules": rules_info,
-            "dye": get_all_dye()  # {dye_name: doc, minesweepervariants..}
-        }
+
+        for name, (fullname, doc) in get_all_dye().items():
+            rules_info[f'@{name}'] = [
+                "dye",
+                fullname,
+                doc
+            ]
+
+            rules_info[f'&{name}'] = [
+                "mask",
+                fullname,
+                doc
+            ]
+        return { "rules": rules_info }
 
     def reset(self, args, json):
 

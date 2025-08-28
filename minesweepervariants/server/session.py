@@ -120,7 +120,7 @@ class SessionManager:
 
         return token, data
 
-    def gen_wrapper(self, queue: Callable[[Model], bool] = (lambda _: False)) -> Callable[[RouteCallable], RouteCallable]:
+    def gen_wrapper(self, needqueue: Callable[[Model], bool] = (lambda _: False)) -> Callable[[RouteCallable], RouteCallable]:
         def _wrapper(func: RouteCallable) -> RouteCallable:
             async def _func() -> ResponseReturnValue:
                 token = request.args.get("token")
@@ -135,7 +135,7 @@ class SessionManager:
                     except:
                         json = None
 
-                    if queue(data["game"]):
+                    if needqueue(data["game"]):
                         taskid = data["tasks"].put_nowait((func, data["game"], request.args, json))
                         return {'taskid': taskid, 'queueing': data["tasks"].qsize(), 'interval': 100}, 200
                     else:

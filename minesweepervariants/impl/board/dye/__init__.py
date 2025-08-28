@@ -60,5 +60,5 @@ def get_all_dye():
     for cls in AbstractDye.__subclasses__():
         result[cls.name] = cls.fullname, cls.doc
     for name, (fullname, doc, _, _) in aliases.items():
-        result[name] = fullname # , doc
+        result[name] = fullname, doc
     return result
