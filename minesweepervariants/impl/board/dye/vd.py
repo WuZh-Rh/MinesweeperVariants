@@ -1,16 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding:utf-8 -*-
-#
-# @Time    : 2025/06/10 09:52
-# @Author  : xxx
-# @FileName: c.py
-
 from . import AbstractDye
 
-
-class DyeC(AbstractDye):
-    name = "c" # checkerboard
-    __doc__ = "棋盘格染色"
+class DyeVD(AbstractDye):
+    name = "vd" # vertical dual
+    __doc__ = "竖直1x2染色"
 
     def __init__(self, args):
         if args:
@@ -23,5 +15,5 @@ class DyeC(AbstractDye):
         for key in board.get_interactive_keys():
             dye = not dye
             for pos, _ in board(key=key):
-                _dye = dye ^ ((pos.x + pos.y + self.offset) % 2 > 0)
+                _dye = dye ^ ((pos.x + pos.y * 2 + self.offset) % 4 > 1)
                 board.set_dyed(pos, _dye)
