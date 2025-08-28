@@ -178,6 +178,7 @@ class GameSession:
     @board.setter
     def board(self, value):
         self.__dict__["board"] = value
+        self.origin_board = value.clone()
 
     def unbelievable(self, pos, action: int):
         """
@@ -301,6 +302,7 @@ class GameSession:
         if r_flag and self.drop_r:
             return None
         self.board = board
+        self.origin_board = board.clone()
         return board
 
     def chord_clue(self, clue_pos: AbstractPosition) -> list[AbstractPosition]:
