@@ -33,7 +33,7 @@ def create_app(sm: SessionManager, model: type[Model]) -> Flask:
     app.add_url_rule('/api/new', 'generate_board', sm.gen_wrapper(lambda _: True)(model.generate_board), methods=['GET', 'POST'])
     app.add_url_rule('/api/metadata', 'metadata', sm.gen_wrapper()(model.metadata), methods=['GET', 'POST'])
     app.add_url_rule('/api/click', 'click', sm.gen_wrapper()(model.click), methods=['GET', 'POST'])
-    app.add_url_rule('/api/hint', 'hint_post', sm.gen_wrapper(lambda _: False)(model.hint_post), methods=['GET', 'POST'])
+    app.add_url_rule('/api/hint', 'hint_post', sm.gen_wrapper(lambda m: m.game.last_hint[0] != m.game.board)(model.hint_post), methods=['GET', 'POST'])
     app.add_url_rule('/api/rules', 'get_rule_list', sm.gen_wrapper()(model.get_rule_list), methods=['GET', 'POST'])
     app.add_url_rule('/api/reset', 'reset', sm.gen_wrapper()(model.reset), methods=['GET', 'POST'])
     app.add_url_rule('/api/new_token', 'gen_token_route', sm.gen_token_route(), methods=['GET', 'POST'])
