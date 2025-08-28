@@ -1,7 +1,7 @@
 from . import AbstractDye
 
 class DyeH(AbstractDye):
-    name = "h"
+    name = "h" # horizontal
     __doc__ = "水平染色"
 
     def __init__(self, args):

@@ -1,7 +1,7 @@
 from . import AbstractDye
 
 class DyeVD(AbstractDye):
-    name = "vd"
+    name = "vd" # vertical dual
     __doc__ = "竖直1x2染色"
 
     def __init__(self, args):

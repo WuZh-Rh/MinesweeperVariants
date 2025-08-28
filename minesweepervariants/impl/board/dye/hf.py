@@ -10,7 +10,7 @@ from . import AbstractDye
 
 
 class DyeHF(AbstractDye):
-    name = "hf"
+    name = "hf" # half
     __doc__ = "随机染色(50%)"
 
     def __init__(self, args):

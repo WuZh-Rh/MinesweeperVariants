@@ -9,7 +9,7 @@ from . import AbstractDye
 
 
 class DyeC(AbstractDye):
-    name = "c"
+    name = "c" # checkerboard
     __doc__ = "棋盘格染色"
 
     def __init__(self, args):

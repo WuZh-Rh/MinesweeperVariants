@@ -2,7 +2,7 @@ from . import AbstractDye
 
 
 class DyeC(AbstractDye):
-    name = "v"
+    name = "v" # vertical
     __doc__ = "竖直染色"
 
     def __init__(self, args):
