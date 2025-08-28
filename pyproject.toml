@@ -1,6 +1,6 @@
 [project]
 name = "minesweepervariants"
-version = "0.2.0"
+version = "0.0.0"
 description = ""
 authors = [
     {name = "WuZh-Rh",email = "you@example.com"},
@@ -21,9 +21,15 @@ tqdm = ">=4.67.1,<5.0.0"
 orjson = ">=3.11.2,<4.0.0"
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=2.0.0,<3.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry_dynamic_versioning.backend"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^9.4.0"
 jurigged = { git = "https://github.com/KoolShow/jurigged.git", rev = "0.6.1-dev" }
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "pep440"
+write_to = "minesweepervariants/_version.py"

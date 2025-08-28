@@ -4,6 +4,7 @@ import traceback
 
 from flask import Response, jsonify, request
 
+import minesweepervariants
 from minesweepervariants.abs.board import AbstractBoard, AbstractPosition
 from minesweepervariants.impl.rule.Rrule.Quess import RuleQuess
 from minesweepervariants.impl.rule.Mrule.F import AbstractRule0F
@@ -204,6 +205,7 @@ class Model():
             "u_mode": u_mode,
             "boards": boards,
             "cells": cells,
+            "version": minesweepervariants.tuple_version()
         }
 
         if game.mode == ULTIMATE:

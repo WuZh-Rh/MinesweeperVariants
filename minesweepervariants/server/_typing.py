@@ -69,6 +69,7 @@ class BoardMetadata(TypedDict):
     mode: Literal["NORMAL", "EXPERT", "ULTIMATE", "PUZZLE", "UNKNOWN"]
     u_mode: NotRequired[List[str]]
     u_hint: NotRequired[Dict[str, int]]
+    version: tuple[int, int, int]
 
 
 class U_Hint(TypedDict):
