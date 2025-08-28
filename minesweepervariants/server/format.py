@@ -1,6 +1,5 @@
 from minesweepervariants.abs.board import AbstractBoard
 from minesweepervariants.impl.summon.game import Mode, UMode, ValueAsterisk, MinesAsterisk
-from minesweepervariants.server._typing import BoardMetadata
 from minesweepervariants.utils.impl_obj import VALUE_QUESS, MINES_TAG
 
 

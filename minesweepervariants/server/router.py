@@ -1,7 +1,7 @@
 from flask import Flask, redirect
 from flask_cors import CORS
 
-from minesweepervariants.server.session import SessionManager
+from .session import SessionManager
 
 from .config import CORS_resources, github_web
 from .model import Model

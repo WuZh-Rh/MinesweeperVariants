@@ -3,8 +3,8 @@ import sys
 import threading
 from pathlib import Path
 
-from minesweepervariants.server.model import Model
-from minesweepervariants.server.multiplayer import MPModel
+from .model import Model
+from .multiplayer import MPModel
 
 from .config import HOT_RELOAD, MULTIPLAYER
 

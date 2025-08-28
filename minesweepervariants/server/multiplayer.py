@@ -1,6 +1,6 @@
 
 
-from minesweepervariants.server.model import Model
+from .model import Model
 
 
 class MPModel(Model):

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import time
 import traceback
 
-from flask import Response, jsonify, request
+from flask import jsonify, request
 
 import minesweepervariants
 from minesweepervariants.abs.board import AbstractBoard, AbstractPosition
