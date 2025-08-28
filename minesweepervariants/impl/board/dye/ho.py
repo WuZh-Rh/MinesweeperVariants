@@ -1,13 +1,13 @@
 from . import AbstractDye
 
-class DyeVD(AbstractDye):
-    name = "vd"
-    __doc__ = "竖直1x2染色"
+class DyeHO(AbstractDye):
+    name = "ho"
+    __doc__ = "水平染色"
 
     def dye(self, board):
         dye = True
         for key in board.get_interactive_keys():
             dye = not dye
             for pos, _ in board(key=key):
-                _dye = dye ^ ((pos.x + pos.y * 2) % 4 > 1)
+                _dye = dye ^ (pos.x % 2 > 0)
                 board.set_dyed(pos, _dye)
