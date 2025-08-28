@@ -12,16 +12,29 @@ class DyeC(AbstractDye):
     name = "q" # quadrant
     __doc__ = "2x2棋盘格染色"
 
+    def parse_int(self, str_value, default):
+        if str_value is None:
+            return default
+        try:
+            return int(str_value)
+        except ValueError:
+            return default
+
     def __init__(self, args):
+        '''
+        args: size:dx:dy
+        size: 棋盘格大小，默认2
+        dx, dy: 棋盘格偏移，默认0
+        '''
         if not args:
             self.size = 2
             self.dx = 0
             self.dy = 0
         else:
             all_args = args.split(':')
-            self.size = int(all_args[0])
-            self.dx = int(all_args[1]) if len(all_args) > 1 else 0
-            self.dy = int(all_args[2]) if len(all_args) > 2 else 0
+            self.size = self.parse_int(all_args[0], 2)
+            self.dx = self.parse_int(all_args[1], 0) if len(all_args) > 1 else 0
+            self.dy = self.parse_int(all_args[2], 0) if len(all_args) > 2 else 0
 
     def dye(self, board):
         dye = True

@@ -4,6 +4,14 @@ class DyeSP(AbstractDye):
     name = "sp" # spiral
     __doc__ = "螺旋染色"
 
+    def parse_int(self, str_value, default):
+        if str_value is None:
+            return default
+        try:
+            return int(str_value)
+        except ValueError:
+            return default
+
     def __init__(self, args):
         # if args:
         #     self.base_color = True
@@ -15,8 +23,8 @@ class DyeSP(AbstractDye):
             self.clockwise = True # 顺时针
         else:
             all_args = args.split(':')
-            self.base_color = all_args[0] != '0'
-            self.clockwise = True if len(all_args) == 1 else all_args[1] == '0'
+            self.base_color = (self.parse_int(all_args[0], 0) != 0)
+            self.clockwise = True if len(all_args) < 2 else (self.parse_int(all_args[1], 1) != 0)
     
     def dye(self, board):
         dye = self.base_color
