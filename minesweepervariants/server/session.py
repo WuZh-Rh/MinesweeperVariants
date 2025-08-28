@@ -1,8 +1,9 @@
 import asyncio
 import ctypes
+from pyclbr import Function
 import queue
 import time
-from typing import Awaitable
+from typing import Awaitable, Callable
 import uuid
 import threading
 
@@ -119,7 +120,41 @@ class SessionManager:
 
         return token, data
 
-    def wrapper(self, func: RouteCallable) -> RouteCallable:
+    def gen_wrapper(self, queue: Callable[[Model], bool] = (lambda _: False)) -> Callable[[RouteCallable], RouteCallable]:
+        def _wrapper(func: RouteCallable) -> RouteCallable:
+            async def _func() -> ResponseReturnValue:
+                token = request.args.get("token")
+
+                if token is None or not (data := self.get(token)):
+                    return 'Unauthorized', 401
+
+                try:
+                    _data = request.data
+                    try:
+                        json = orjson.loads(_data)
+                    except:
+                        json = None
+
+                    if queue(data["game"]):
+                        taskid = data["tasks"].put_nowait((func, data["game"], request.args, json))
+                        return {'taskid': taskid, 'queueing': data["tasks"].qsize(), 'interval': 100}, 200
+                    else:
+                        result = func(data["game"], request.args, json)
+                        if isinstance(result, Awaitable):
+                            result = await result
+                        return result
+                except queue.Full:
+                    return 'Too Many Requests', 429
+            return _func
+        return _wrapper
+
+    def gen_token_route(self) -> RouteCallable:
+        async def _func() -> ResponseReturnValue:
+            token, _ = await self.create()
+            return {"token": token, "success": True}
+        return _func
+
+    def gen_check(self) -> RouteCallable:
         async def _func() -> ResponseReturnValue:
             token = request.args.get("token")
             taskid = request.args.get("taskid")
@@ -134,22 +169,6 @@ class SessionManager:
                     return {'interval': 100}, 202
                 else:
                     return 'Not Found', 404
-
-            try:
-                _data = request.data
-                try:
-                    json = orjson.loads(_data)
-                except:
-                    json = None
-                taskid = data["tasks"].put_nowait((func, data["game"], request.args, json))
-            except queue.Full:
-                return 'Too Many Requests', 429
-
-            return {'taskid': taskid, 'queueing': data["tasks"].qsize(), 'interval': 100}, 200
-        return _func
-
-    def gen_token_route(self) -> RouteCallable:
-        async def _func() -> ResponseReturnValue:
-            token, _ = await self.create()
-            return {"token": token, "success": True}
+            else:
+                return 'Bad Request', 400
         return _func
