@@ -26,7 +26,9 @@ class MPModel(Model):
         from minesweepervariants.impl.summon.game import GameSession
 
         if self.host is None:
-            return super().generate_board(args, json)
+            result = super().generate_board(args, json)
+            self.game.board_back = self.game.board.clone()
+            return result
 
         try:
             host_game = self.host.get_game()
@@ -51,11 +53,12 @@ class MPModel(Model):
             ultimate_mode=host_game.ultimate_mode,
         )
         new_game.answer_board = host_game.answer_board.clone()
-        new_game.board = host_game.board.clone()
+        new_game.board = host_game.board_back.clone()
 
+        self.rules = self.host.rules
         self.game = new_game
-        self.board = new_game.board.clone()
+        self.board = new_game.board
 
-        self.reset(request)
+        self.reset(args, json)
 
         return {"reason": "", "success": True}, 200
