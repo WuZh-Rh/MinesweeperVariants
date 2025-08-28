@@ -8,7 +8,7 @@ class DyeSP(AbstractDye):
         if args:
             self.base_color = True
         else:
-            self.base_color = False
+            self.base_color = False # 背景色是非染色（第一圈染色）
     
     def dye(self, board):
         dye = self.base_color
