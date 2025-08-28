@@ -9,7 +9,7 @@ from . import AbstractDye
 
 
 class DyeC(AbstractDye):
-    name = "nq" # no quadrant
+    name = "NQ"
     __doc__ = "无方染色"
 
     def dye(self, board):

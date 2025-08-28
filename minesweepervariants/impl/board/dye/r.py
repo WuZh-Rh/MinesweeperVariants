@@ -11,8 +11,8 @@ from . import AbstractDye
 
 
 class DyeR(AbstractDye):
-    name = "r" # random
-    __doc__ = "纯随机染色"
+    name = "r"
+    __doc__ = "纯随机"
 
     def dye(self, board):
         random = get_random()

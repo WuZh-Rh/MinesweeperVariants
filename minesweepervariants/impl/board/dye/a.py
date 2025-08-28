@@ -9,7 +9,7 @@ from . import AbstractDye
 
 
 class DyeA(AbstractDye):
-    name = "a" # all
+    name = "a"
     __doc__ = "全盘染色"
 
     def dye(self, board):
