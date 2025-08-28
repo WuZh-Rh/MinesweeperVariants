@@ -230,7 +230,7 @@ class Model():
                     if _pos.board_key not in game.board.get_interactive_keys()
                 ])
 
-        print("[metadata]", board_data)
+        # print("[metadata]", board_data)
         return board_data
 
     def click(self, args, json) -> ResponseType[ClickResponse]:
@@ -452,7 +452,7 @@ class Model():
                 "condition": b_hint,
                 "conclusion": t_hint
             })
-        [print("[hint] hint:", _results) for _results in results]
+        # [print("[hint] hint:", _results) for _results in results]
         cells = []
         print(hint_list)
         for pos in hint_list[0][0]:
@@ -480,7 +480,7 @@ class Model():
             "noHint": self.noHint,
             "cells": cells
         }
-        print("[hint] hint back: ", data)
+        # print("[hint] hint back: ", data)
         return data, 200
 
     def get_rule_list(self, args, json):
