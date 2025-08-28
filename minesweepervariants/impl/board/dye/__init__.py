@@ -7,6 +7,9 @@ from abc import ABC, abstractmethod
 class AbstractDye(ABC):
     name = None
 
+    def __init__(self, args):
+        self.args = args
+
     @abstractmethod
     def dye(self, board):
         """染色函数"""
@@ -24,11 +27,17 @@ def _auto_import_modules():
 _auto_import_modules()
 
 
-def get_dye(name: str) -> type[AbstractDye] | None:
+def get_dye(name: str) -> AbstractDye | None:
     name = name[1:] if name.startswith("@") else name
+    args = ""
+    if ":" in name:
+        index = name.index(":")
+        name, args = name[:index], name[index + 1:]
+
     for cls in AbstractDye.__subclasses__():
         if cls.name == name:
-            return cls
+            return cls(args)
+
     raise ValueError(f"未知的染色规则[@{name[1:] if name.startswith('@') else name}]")
 
 

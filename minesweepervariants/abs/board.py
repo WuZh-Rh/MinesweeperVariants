@@ -237,7 +237,7 @@ class AbstractBoard(ABC):
         return True
 
     def dyed(self, name: str):
-        get_dye(name)().dye(self)
+        get_dye(name).dye(self)
 
     def has(self, target: str, key: str = None):
         """
