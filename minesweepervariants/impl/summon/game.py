@@ -178,7 +178,10 @@ class GameSession:
     @board.setter
     def board(self, value):
         self.__dict__["board"] = value
-        self.origin_board = value.clone()
+        try:
+            self.origin_board = value.clone()
+        except:
+            self.origin_board = value
 
     def unbelievable(self, pos, action: int):
         """

@@ -51,8 +51,8 @@ class MPModel(Model):
             drop_r=host_game.drop_r,
             ultimate_mode=host_game.ultimate_mode,
         )
-        new_game.flag_tag = host_game.flag_tag.clone()
-        new_game.clue_tag = host_game.clue_tag.clone()
+        new_game.flag_tag = host_game.flag_tag
+        new_game.clue_tag = host_game.clue_tag
         new_game.answer_board = host_game.answer_board.clone()
         new_game.board = host_game.origin_board.clone()
 
