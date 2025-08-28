@@ -1,3 +1,4 @@
+from tkinter import NO
 from flask import Flask, redirect
 from flask_cors import CORS
 
@@ -28,6 +29,11 @@ def create_app(sm: SessionManager, model: type[Model]) -> Flask:
     @app.route('/')
     def root():
         return redirect(github_web)
+
+    @app.route('/api/check')
+    @sm.wrapper
+    def check(*args):
+        return "BAD_REQUEST", 400
 
     app.add_url_rule('/api/new', 'generate_board', sm.wrapper(model.generate_board), methods=['GET', 'POST'])
     app.add_url_rule('/api/metadata', 'metadata', sm.wrapper(model.metadata), methods=['GET', 'POST'])

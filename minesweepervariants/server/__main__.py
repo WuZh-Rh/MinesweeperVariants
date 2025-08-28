@@ -46,7 +46,7 @@ async def main():
     host = "0.0.0.0"
 
     print(f"server start at {host}:{port}")
-    threading.Thread(target=waitress.serve, args=(app,), kwargs={"host": host, "port": port}).start()
+    threading.Thread(target=waitress.serve, args=(app,), kwargs={"host": host, "port": port}, daemon=True).start()
 
     await db.start()
 

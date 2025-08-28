@@ -1,5 +1,6 @@
 
 
+from flask import Request
 from .model import Model
 
 
@@ -21,11 +22,11 @@ class MPModel(Model):
     def remove_player(self, player: Model):
         self.players.remove(player)
 
-    def generate_board(self):
+    def generate_board(self, args, json):
         from minesweepervariants.impl.summon.game import GameSession
 
         if self.host is None:
-            return super().generate_board()
+            return super().generate_board(args, json)
 
         try:
             host_game = self.host.get_game()
@@ -55,6 +56,6 @@ class MPModel(Model):
         self.game = new_game
         self.board = new_game.board.clone()
 
-        self.reset()
+        self.reset(request)
 
         return {"reason": "", "success": True}, 200

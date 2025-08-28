@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import time
 import traceback
 
-from flask import jsonify, request
+from flask import Request
 
 import minesweepervariants
 from minesweepervariants.abs.board import AbstractBoard, AbstractPosition
@@ -16,6 +16,8 @@ from minesweepervariants.impl.summon.game import ULTIMATE_R, ULTIMATE_S, ULTIMAT
 from minesweepervariants.utils.tool import get_random
 from minesweepervariants.utils.impl_obj import get_seed, VALUE_QUESS, MINES_TAG
 from minesweepervariants.utils.tool import hash_str
+from minesweepervariants.impl.rule import get_all_rules
+from minesweepervariants.impl.board.dye import get_all_dye
 
 from .format import format_board, format_cell, format_gamemode
 from ._typing import CellType, CellState, Board, ClickData, CountInfo, ComponentTemplate, ComponentConfig, CellConfig, \
@@ -59,10 +61,10 @@ class Model():
         }
         return count
 
-    def generate_board(self) -> ResponseType[GenerateBoardResult]:
+    def generate_board(self, _args, json) -> ResponseType[GenerateBoardResult]:
         data: GenerateBoardResult
 
-        args: CreateGameParams = request.args  # type: ignore
+        args: CreateGameParams = _args
 
         t = time.time()
         answer_board = None
@@ -103,14 +105,14 @@ class Model():
 
         print(mode, u_mode)
 
-        size_list = [int(i) for i in request.args.get("size", "5x5").split("x")]
+        size_list = [int(i) for i in args.get("size", "5x5").split("x")]
         match size_list:
             case [width, height]:
                 size = (width, height)
             case [length]:
                 size = (length, length)
             case _:
-                raise ValueError(f"无效的棋盘大小: {request.args.get('size')}")
+                raise ValueError(f"无效的棋盘大小: {args.get('size')}")
 
         summon = Summon(
             size=size,
@@ -179,7 +181,7 @@ class Model():
         print("[new]", data)
         return data, 200
 
-    def metadata(self) -> ResponseType[BoardMetadata]:
+    def metadata(self, args, json) -> ResponseType[BoardMetadata]:
         board_data: BoardMetadata
         print("[metadata] start")
 
@@ -231,14 +233,14 @@ class Model():
         print("[metadata]", board_data)
         return board_data
 
-    def click(self) -> ResponseType[ClickResponse]:
+    def click(self, args, json) -> ResponseType[ClickResponse]:
         refresh: ClickResponse
 
         cells: list[CellConfig] = []
         gameover = False
         win = False
 
-        data: ClickData = request.get_json()
+        data: ClickData = json
 
         print("[click] data:", data)
 
@@ -379,7 +381,7 @@ class Model():
         print("[click] refresh: " + str(refresh))
         return refresh, 200
 
-    def hint_post(self):
+    def hint_post(self, args, json):
         game = self.game
         print("[hint] hint start")
         t = time.time()
@@ -481,9 +483,7 @@ class Model():
         print("[hint] hint back: ", data)
         return jsonify(data), 200
 
-    def get_rule_list(self):
-        from minesweepervariants.impl.rule import get_all_rules
-        from minesweepervariants.impl.board.dye import get_all_dye
+    def get_rule_list(self, args, json):
         all_rules = get_all_rules()
         rules_info = {}
         for key in ["L", "M", "R"]:
@@ -500,7 +500,7 @@ class Model():
             "dye": get_all_dye()  # {dye_name: doc, minesweepervariants..}
         }
 
-    def reset(self):
+    def reset(self, args, json):
 
         game: Game = self.game
         mask_board = self.board.clone()
