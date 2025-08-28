@@ -82,16 +82,12 @@ def format_cell(_board, pos, label):
     obj = _board[pos]
     color = "--flag-color" if _board.get_type(pos) == "F" else "--foreground-color"
     invalid = False if obj is None else obj.invalid(_board)
-    cell_data = init_component({
-        "type": "row",
-        "children": [obj.web_component(_board)]
-    }, color=color, invalid=invalid)
-    cell_data["style"] += " width: 100%; height: 100%; align-items: center; justify-content: center;"
+    cell_data = init_component(
+        obj.web_component(_board),
+        color=color, invalid=invalid
+    )
     cell_data["style"] += (f"color: rgb(from var({color}) r g b /"
-                           f" {50 if invalid else 100}%);"
-                           f" flex: 1; min-width: 0;")
-    # if dye:
-    #     cell_data["style"] += " background-color: rgb(from var(--foreground-color) r g b / 29%);"
+                           f" {50 if invalid else 100}%);")
     if (
         _board.get_config(pos.board_key, "pos_label") and
         (
@@ -182,8 +178,7 @@ def format_board(_board: AbstractBoard):
             "size": _board.get_config(key, "size"),
             "position": [_board.get_board_keys().index(key), 0],
             "showLabel": _board.get_config(key, "row_col"),
-            "showName": not _board.get_config(key, "row_col"),  # TODO 何时不显示Name?
-            # TODO X=N, poslabel
+            "showName": not _board.get_config(key, "row_col"),
         }
         print(mask_list)
         if any(any(i) for i in mask_list):
