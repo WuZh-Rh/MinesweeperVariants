@@ -8,7 +8,7 @@ from minesweepervariants.impl.summon.solver import Switch
 
 class RuleSC(AbstractMinesRule):
     name = ["SC", "甘蔗", "Sugar Cane"]
-    doc = "每个雷周围至少有一个染色格"
+    doc = "每个雷周围至少有一个染色格, 且染色格不能为雷"
 
     def create_constraints(self, board: 'AbstractBoard', switch: 'Switch'):
         model = board.get_model()
