@@ -481,7 +481,7 @@ class Model():
             "cells": cells
         }
         print("[hint] hint back: ", data)
-        return jsonify(data), 200
+        return data, 200
 
     def get_rule_list(self, args, json):
         all_rules = get_all_rules()

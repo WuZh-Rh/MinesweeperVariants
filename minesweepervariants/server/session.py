@@ -131,7 +131,7 @@ class SessionManager:
                 if result := data["tasks"].get_result(int(taskid)):
                     return result
                 elif (data["tasks"].is_queueing(int(taskid))):
-                    return 'Processing', 202
+                    return {'interval': 100}, 202
                 else:
                     return 'Not Found', 404
 
@@ -145,7 +145,7 @@ class SessionManager:
             except queue.Full:
                 return 'Too Many Requests', 429
 
-            return {'taskid': taskid, 'queueing': data["tasks"].qsize()}, 200
+            return {'taskid': taskid, 'queueing': data["tasks"].qsize(), 'interval': 100}, 200
         return _func
 
     def gen_token_route(self) -> RouteCallable:
