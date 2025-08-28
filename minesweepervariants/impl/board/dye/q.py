@@ -17,7 +17,7 @@ class DyeC(AbstractDye):
             "x: x偏移 y: y偏移\n" \
             "w: 宽度 h: 高度\n" \
             "px: x方向的间隔 py: y方向的间隔\n" \
-            "bx: x方向的边界 bx: y方向的边界\n"
+            "bx: x方向的边界 by: y方向的边界\n"
 
     @staticmethod
     def parse_pair(value: str, default: tuple[int, int] = (0, 0)):
