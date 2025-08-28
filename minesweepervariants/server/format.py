@@ -3,7 +3,7 @@ from minesweepervariants.impl.summon.game import Mode, UMode, ValueAsterisk, Min
 from minesweepervariants.utils.impl_obj import VALUE_QUESS, MINES_TAG
 
 
-def init_component(data: dict, *, color: str = '--primary-color', invalid: bool = False) -> dict:
+def init_component(data: dict, *, color: str = '--foreground-color', invalid: bool = False) -> dict:
     if data["type"] in ["col", "row"]:
         style = "display: flex; "
         if data["type"] == "col":
