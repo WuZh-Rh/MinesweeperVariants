@@ -2,14 +2,14 @@ from . import AbstractDye
 
 class DyeW(AbstractDye):
     name = "w" # wrapsaround
-    __doc__ = "回环染色"
+    fullname = "回环染色"
 
     def __init__(self, args):
         if args:
             self.base_color = False
         else:
             self.base_color = True # 最外圈染色
-    
+
     def dye(self, board):
         dye = self.base_color
         for key in board.get_interactive_keys():

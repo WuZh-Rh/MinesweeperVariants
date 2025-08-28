@@ -10,7 +10,7 @@ from . import AbstractDye
 
 class DyeC(AbstractDye):
     name = "3ds"
-    __doc__ = "3D空心染色"
+    fullname = "3D空心染色"
 
     def dye(self, board):
         dye = True
