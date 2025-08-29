@@ -7,14 +7,24 @@ class DyeR(AbstractDye):
     name = "r" # random
     fullname = "随机染色"
 
-    def __init__(self, args):
+    def __init__(self, args: str):
         self.percentage = None
-        if args:
-            self.percentage = int(args) / 100
+        self.count = None
+        match args:
+            case str(x) if x.endswith('%') and x[:-1].isdigit():
+                self.percentage = int(x[:-1]) / 100
+            case str(x) if x.isdigit():
+                self.count = int(x)
+
 
     def dye(self, board):
         random = get_random()
-        if self.percentage:
+        if self.count:
+            positions = [pos for pos, _ in board()]
+            positions = random.sample(positions, self.count)
+            for pos in positions:
+                board.set_dyed(pos, True)
+        elif self.percentage:
             positions = [pos for pos, _ in board()]
             positions = random.sample(positions, round(len(positions) * self.percentage))
             for pos in positions:
