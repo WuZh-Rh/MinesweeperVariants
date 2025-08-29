@@ -32,6 +32,7 @@ class Rule1S(AbstractMinesRule):
         for pos, var in board(mode="variable"):
             tmp_bool = model.NewBoolVar("tmp")
             var_list = board.batch(pos.neighbors(1), mode="variable", drop_none=True)
+            model.Add(sum(var_list) > 0).OnlyEnforceIf([var, s])
             model.Add(sum(var_list) < 3).OnlyEnforceIf([var, s])
             model.Add(sum(var_list) == 1).OnlyEnforceIf([tmp_bool, s])
             model.Add(var == 1).OnlyEnforceIf([tmp_bool, s])

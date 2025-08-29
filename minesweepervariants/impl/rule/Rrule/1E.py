@@ -107,7 +107,7 @@ class Value1E(AbstractClueValue):
             for i in range(value):
                 current_pos = fn(i)
                 if not board.in_bounds(current_pos):
-                    continue
+                    break
                 if board.get_variable(current_pos) is None:
                     continue
                 info["T"].pop(-1)
