@@ -3,6 +3,7 @@ import ctypes
 from pyclbr import Function
 import queue
 import time
+import traceback
 from typing import Awaitable, Callable
 import uuid
 import threading
@@ -52,10 +53,15 @@ class TaskQueue(queue.Queue):
         while True:
             item = self.get()
             taskid, (func, *args) = item
-            result = func(*args)
-            if isinstance(result, Awaitable):
-                result = asyncio.run(result) # type: ignore
-            self.result[taskid] = result
+            try:
+                result = func(*args)
+                if isinstance(result, Awaitable):
+                    result = asyncio.run(result) # type: ignore
+                self.result[taskid] = result
+            except Exception:
+                exc = traceback.format_exc()
+                self.result[taskid] = {"success": False, "error": exc}
+                print(f"Task {taskid} error: \n{exc}")
             self.task_done()
 
     def start(self):

@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import time
+import trace
 import traceback
 
 from flask import Request
@@ -187,8 +188,8 @@ class Model():
 
         try:
             game = self.get_game()
-        except RuntimeError as e:
-            print("[metadata]", e)
+        except:
+            print("[metadata]", traceback.format_exc())
             return {}, 200  # type: ignore
 
         board = game.board
