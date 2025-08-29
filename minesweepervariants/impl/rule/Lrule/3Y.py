@@ -55,11 +55,11 @@ class Rule3Y(AbstractMinesRule):
             pos_list = block(pos, board)
             if not pos_list:
                 continue
-            a, b, c, d = board.batch(pos_list, mode="variable")
-            model.AddBoolOr([a.Not(), b, c, d.Not()]).OnlyEnforceIf(s)  # 排除 1010
-            model.AddBoolOr([a, b.Not(), c.Not(), d]).OnlyEnforceIf(s)  # 排除 0101
-            model.AddBoolOr([a, b, c, d]).OnlyEnforceIf(s)  # 排除 0000
-            model.AddBoolOr([a.Not(), b.Not(), c.Not(), d.Not()]).OnlyEnforceIf(s)  # 排除 1111
+            vars = [board.get_variable(p) for p in pos_list if board.in_bounds(p)]
+            # model.AddBoolOr([a.Not(), b, c, d.Not()]).OnlyEnforceIf(s)  # 排除 1010
+            # model.AddBoolOr([a, b.Not(), c.Not(), d]).OnlyEnforceIf(s)  # 排除 0101
+            model.AddBoolOr(vars).OnlyEnforceIf(s)  # 排除 0000
+            model.AddBoolOr([v.Not() for v in vars]).OnlyEnforceIf(s)  # 排除 1111
 
     def suggest_total(self, info: dict):
         ub = 0
