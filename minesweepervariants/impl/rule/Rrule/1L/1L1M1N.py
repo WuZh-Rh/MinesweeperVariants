@@ -1,20 +1,17 @@
-from typing import List
-
 from .....abs.Rrule import AbstractClueRule, AbstractClueValue
 from .....abs.board import AbstractBoard, AbstractPosition
-
 from .....utils.tool import get_logger, get_random
 
-def liar_1N(value: int, random) -> int:
+def liar_1M1N(value: int, random) -> int:
     value += 1 if random.random() > 0.5 else -1
     if value < 0:
         value = -value
-    if value > 4:
-        value = 3
+    if value > 8:
+        value = 7
     return value
 
-class Rule1L1N(AbstractClueRule):
-    name = ["1L1N", "LN", "误差 + 负雷", "Liar + Negative"]
+class Rule1L1M1N(AbstractClueRule):
+    name = ["1L1M1N", "LMN", "误差 + 多雷 + 负雷", "Liar + Multiple + Negative"]
     doc = ""
 
     def fill(self, board: AbstractBoard) -> AbstractBoard:
@@ -29,14 +26,14 @@ class Rule1L1N(AbstractClueRule):
                 if t != "F":
                     continue
                 if d:
-                    value += 1
+                    value += 2
                 else:
                     value -= 1
-            value = liar_1N(value, random)
-            board.set_value(pos, Value1L1N(pos, code=bytes([value])))
+            value = liar_1M1N(value, random)
+            board.set_value(pos, Value1L1M1N(pos, code=bytes([value])))
         return board
 
-class Value1L1N(AbstractClueValue):
+class Value1L1M1N(AbstractClueValue):
     value: int
     neighbors: list
 
@@ -53,7 +50,7 @@ class Value1L1N(AbstractClueValue):
     
     @classmethod
     def type(cls) -> bytes:
-        return Rule1L1N.name[0].encode("ascii")
+        return Rule1L1M1N.name[0].encode("ascii")
 
     def code(self) -> bytes:
         return bytes([self.value])
@@ -68,9 +65,8 @@ class Value1L1N(AbstractClueValue):
         vars_a = board.batch(nei_a, mode="variable", drop_none=True)
         vars_b = board.batch(nei_b, mode="variable", drop_none=True)
 
-        diff = sum(vars_a) - sum(vars_b)
-
-        max_abs = len(vars_a) + len(vars_b)
+        diff = 2 * sum(vars_a) - sum(vars_b)
+        max_abs = 2 * len(vars_a) + len(vars_b)
         abs_diff = model.NewIntVar(0, max_abs, "abs_diff")
 
         b1 = model.NewBoolVar("sum_eq_count_plus_1")

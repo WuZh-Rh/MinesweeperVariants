@@ -8,7 +8,6 @@ from .....abs.Rrule import AbstractClueRule, AbstractClueValue
 from .....abs.board import AbstractBoard, AbstractPosition
 
 from .....utils.tool import get_logger, get_random
-from .....utils.impl_obj import VALUE_QUESS, MINES_TAG
 
 def liar_1M(value: int, random) -> int:
     value += 1 if random.random() > 0.5 else -1
