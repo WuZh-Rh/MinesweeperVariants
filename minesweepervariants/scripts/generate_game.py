@@ -15,6 +15,7 @@ from minesweepervariants.impl.impl_obj import ModelGenerateError, get_board, enc
 from minesweepervariants.impl.summon import Summon
 from minesweepervariants.impl.summon.game import GameSession, PUZZLE
 from minesweepervariants.impl.summon.summon import GenerateError
+from minesweepervariants.utils.image_create import draw_board
 from minesweepervariants.utils.impl_obj import get_seed
 from minesweepervariants.utils.tool import get_logger, get_random
 
@@ -35,12 +36,13 @@ def main(
         query: int,  # 至少有几线索推理
         attempts: int,  # 尝试次数
         dye: str,  # 染色规则
-        mask_dye: str,   # 异形题板
+        mask_dye: str,  # 异形题板
         drop_r: bool,  # 在推理时候是否隐藏R推理
         early_stop: bool,  # 如果达到指定的线索数量 直接跳出
         board_class: str,  # 题板的类名
         vice_board: bool,  # 启用删除副板
-        unseed: bool  # 是否禁用种子来快速生成题目
+        unseed: bool,  # 是否禁用种子来快速生成题目
+        file_name: str = ""
 ):
     rule_code = rules[:]
     logger = get_logger(log_lv=log_lv)
@@ -133,38 +135,52 @@ def main(
 
         mask = mask.to_bytes(byte_length, "big", signed=False)
 
-        with (open(os.path.join(CONFIG["output_path"], "demo.txt"), "a", encoding="utf-8") as f):
-            f.write("\n" + ("=" * 100) + "\n\n生成时间" + logger.get_time() + "\n")
-            f.write(f'线索表\n')
-            if 0 in clue_freq:
-                f.write("存在线索数为0的可推格 请注意辨别\n")
-            if early_stop:
-                f.write("(已启用-e参数 线索图不准确)\n")
-            f.write(f'{clue_freq}\n')
-            f.write(f"生成用时:{time_used}s\n")
-            f.write(f"总雷数: {total}/{n_num}\n")
-            f.write(f"种子: {get_seed()}\n")
-            f.write("\n" + rule_text)
-            f.write("\n" + board_str)
-            f.write("\n" + answer)
+        rule_code = [base64.urlsafe_b64encode(rule.encode("utf-8")).decode("utf-8") for rule in rule_code]
 
-            f.write(f"\n答案: img -c {encode_board(answer_code)} ")
-            f.write(f"-r \"{rule_text}-R{total}/")
-            f.write(f"{n_num}")
-            if unseed:
-                f.write(f"-{get_seed()}\" ")
-            else:
-                f.write(" ")
-            f.write("-o answer\n")
+        if not file_name:
+            with (open(os.path.join(CONFIG["output_path"], "demo.txt"), "a", encoding="utf-8") as f):
+                f.write("\n" + ("=" * 100) + "\n\n生成时间" + logger.get_time() + "\n")
+                f.write(f'线索表\n')
+                if 0 in clue_freq:
+                    f.write("存在线索数为0的可推格 请注意辨别\n")
+                if early_stop:
+                    f.write("(已启用-e参数 线索图不准确)\n")
+                f.write(f'{clue_freq}\n')
+                f.write(f"生成用时:{time_used}s\n")
+                f.write(f"总雷数: {total}/{n_num}\n")
+                f.write(f"种子: {get_seed()}\n")
+                f.write("\n" + rule_text)
+                f.write("\n" + board_str)
+                f.write("\n" + answer)
 
-            f.write(f"\n题板: img -c {encode_board(board_code)} ")
-            f.write(f"-r \"{rule_text}-R{'*' if drop_r else total}/")
-            f.write(f"{n_num}")
-            if unseed:
-                f.write(f"-{get_seed()}\" ")
-            else:
-                f.write(" ")
-            f.write("-o demo\n")
+                f.write(f"\n答案: img -c {encode_board(answer_code)} ")
+                f.write(f"-r \"{rule_text}-R{total}/")
+                f.write(f"{n_num}")
+                if unseed:
+                    f.write(f"-{get_seed()}\" ")
+                else:
+                    f.write(" ")
+                f.write("-o answer\n")
 
-            rule_code = [base64.urlsafe_b64encode(rule.encode("utf-8")).decode("utf-8") for rule in rule_code]
-            f.write(f"\n题板代码: \n{encode_board(answer_code)}:{mask.hex()}:{':'.join(rule_code)}\n")
+                f.write(f"\n题板: img -c {encode_board(board_code)} ")
+                f.write(f"-r \"{rule_text}-R{'*' if drop_r else total}/")
+                f.write(f"{n_num}")
+                if unseed:
+                    f.write(f"-{get_seed()}\" ")
+                else:
+                    f.write(" ")
+                f.write("-o demo\n")
+
+                f.write(f"\n题板代码: \n{encode_board(answer_code)}:{mask.hex()}:{':'.join(rule_code)}\n")
+
+        draw_board(board=get_board(board_class)(code=board_code), cell_size=100, output=file_name + "demo",
+                   bottom_text=(rule_text + "-" + str(max(clue_freq.keys())) +
+                                f"-R{'*' if drop_r else total}/{n_num}" +
+                                ("\n" if unseed else f"-{get_seed()}\n")))
+
+        draw_board(board=get_board(board_class)(code=answer_code), output=file_name + "answer", cell_size=100,
+                   bottom_text=(rule_text + "-" + str(max(clue_freq.keys())) +
+                                f"-R{total}/{n_num}" +
+                                ("\n" if unseed else f"-{get_seed()}\n")))
+
+        return

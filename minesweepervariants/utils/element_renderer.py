@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING, Dict, Tuple
 import minesweepervariants
 from minesweepervariants.utils.tool import get_logger
 
-if TYPE_CHECKING:
-    from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont
+
 
 class Renderer:
     def __init__(self, cell_size: float, background_white: bool,
