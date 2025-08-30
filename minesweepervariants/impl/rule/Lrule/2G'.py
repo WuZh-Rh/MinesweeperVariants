@@ -13,7 +13,7 @@ from ....abs.board import AbstractBoard
 
 
 class Rule2Gp(AbstractMinesRule):
-    name = ["2G'", "三联块", "Group'"]
+    name = ["2G'", "三连块", "Group'"]
     doc = "所有四连通雷区域的面积为3"
 
     def create_constraints(self, board: 'AbstractBoard', switch):

@@ -101,9 +101,9 @@ class Value1L(AbstractClueValue):
 
             # 将布尔变量与表达式绑定
             model.Add(neighbor_sum == self.count + 1).OnlyEnforceIf(b1)
-            model.Add(neighbor_sum != self.count + 1).OnlyEnforceIf(b1.Not())
+            # model.Add(neighbor_sum != self.count + 1).OnlyEnforceIf(b1.Not())
 
             model.Add(neighbor_sum == self.count - 1).OnlyEnforceIf(b2)
-            model.Add(neighbor_sum != self.count - 1).OnlyEnforceIf(b2.Not())
+            # model.Add(neighbor_sum != self.count - 1).OnlyEnforceIf(b2.Not())
 
             model.AddBoolOr([b1, b2]).OnlyEnforceIf(s)
