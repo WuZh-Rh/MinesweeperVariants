@@ -3,6 +3,7 @@ name = "minesweepervariants"
 dynamic = ["version"]
 description = ""
 authors = [
+    {name = "Minesweepervariants-Fanmade(Organization)",email = "Minesweepervariants-Fanmade@outlook.com"},
     {name = "WuZh-Rh",email = "you@example.com"},
     {name = "KoolShow",email = "51787949+KoolShow@users.noreply.github.com"}
 ]
@@ -32,7 +33,7 @@ build-backend = "poetry_dynamic_versioning.backend"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^9.4.0"
-jurigged = { git = "https://github.com/KoolShow/jurigged.git", rev = "0.6.1-dev" }
+jurigged = { git = "https://github.com/Minesweepervariants-Fanmade/jurigged.git", rev = "0.6.1-dev" }
 
 [tool.poetry-dynamic-versioning]
 enable = true

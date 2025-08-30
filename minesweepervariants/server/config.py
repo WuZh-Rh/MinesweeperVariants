@@ -1,5 +1,5 @@
 
-github_web = "https://koolshow.github.io/MinesweeperVariants-Vue/"
+github_web = "https://minesweepervariants-fanmade.github.io/MinesweeperVariants-Vue/"
 
 CORS_resources = {r"/*": {"origins": "*"}}
 
