@@ -58,7 +58,7 @@ parser.add_argument("--log-lv", default=defaults.get("log_lv"),
                     help="日志等级，如 DEBUG、INFO、WARNING")
 parser.add_argument("--board-class", default=defaults.get("board_class"),
                     help="题板的类名/题板的名称 通常使用默认值即可")
-parser.add_argument("--no-image", action="store_true", default=False,
+parser.add_argument("--no-image", action="store_true", default=defaults.get("no_image"),
                     help="是否不生成图片")
 parser.add_argument("--file-name", default="",
                     help="文件名的前缀")

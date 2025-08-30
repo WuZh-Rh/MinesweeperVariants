@@ -21,6 +21,7 @@ DEFAULT_CONFIG = {
     "total": -1,                   # 默认自动计算总雷数数量
     "dye": "",                     # 默认无染色
     "used_r": False,               # 默认不启用R推理
+    "no_image": False,             # 默认生成图片
 
     "output_path": ".\\output",   # 保存路径，默认为工作目录下的output
     "timeout": 0,                 # 求解器超时时间（秒），0为无限制
