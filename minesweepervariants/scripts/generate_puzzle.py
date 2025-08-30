@@ -11,6 +11,7 @@ import time
 from minesweepervariants.impl.impl_obj import get_board, ModelGenerateError, encode_board
 from minesweepervariants.impl.summon import Summon
 from minesweepervariants.impl.summon.summon import GenerateError
+from minesweepervariants.utils import timer
 from minesweepervariants.utils.image_create import draw_board
 from minesweepervariants.utils.tool import get_logger, get_random
 from minesweepervariants.utils.impl_obj import get_seed
@@ -161,7 +162,11 @@ def main(
 
         f.write(f"\n题板代码: \n{encode_board(answer_code)}:{mask.hex()}:{':'.join(rule_code)}\n")
 
-        
+        f.write(f"\n总求解用时: \n{sum(d['time'] for d in timer.HISTORY)}s\n")
+
+        f.write("\n求解记录:\n")
+        for d in timer.HISTORY:
+            f.write(f"求解状态: {d['result']}, 用时: {d['time']}s\n")
 
     if image:
         draw_board(board=get_board(board_class)(code=board_code), cell_size=100, output=file_name + "demo",

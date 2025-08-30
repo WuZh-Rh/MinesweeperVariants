@@ -26,6 +26,8 @@ from ...impl.rule.Rrule.sharp import RuleSharp as RuleClueSharp
 
 from minesweepervariants.config.config import PUZZLE_CONFIG
 
+from ...utils.timer import timer
+
 # ==== 获取默认值 ====
 CONFIG = {}
 CONFIG.update(PUZZLE_CONFIG)
@@ -210,7 +212,7 @@ class Summon:
                 hard_fn(model, total_var)
 
             solver = cp_model.CpSolver()
-            status = solver.Solve(model)
+            status = timer(solver.Solve)(model)
 
             if status in (cp_model.FEASIBLE, cp_model.OPTIMAL):
                 self.total = n

@@ -6,7 +6,10 @@
 import os
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import as_completed
+import time
 from ortools.sat.python.cp_model import IntVar
+
+from minesweepervariants.utils.timer import timer
 
 from ...abs.rule import AbstractRule, AbstractValue
 from ortools.sat.python import cp_model
@@ -268,13 +271,13 @@ def solver_by_csp(
                 model.Add(val != value).OnlyEnforceIf(tmp)
         model.AddBoolOr(current_solution)  # 新增排除当前解约束（至少有一个变量取反）
 
-        status2 = solver.Solve(model)
+        status2 = timer(solver.Solve)(model)
         if status2 == cp_model.FEASIBLE or status2 == cp_model.OPTIMAL:
             logger.trace(f"求解器多解")
             return 2
         return 1
 
-    status = solver.Solve(model)
+    status = timer(solver.Solve)(model)
 
     # 5.检查是否无解或者多解
     if status == cp_model.INFEASIBLE:
@@ -333,7 +336,7 @@ def solver_by_csp(
 
     model.AddBoolOr(current_solution)  # 新增排除当前解约束（至少有一个变量取反）
 
-    status2 = solver.Solve(model)
+    status2 = timer(solver.Solve)(model)
     if status2 == cp_model.FEASIBLE or status2 == cp_model.OPTIMAL:
         logger.trace(f"求解器多解")
         return 2
@@ -357,7 +360,7 @@ def deduced_by_csp(
     model.Add(target_var == (0 if answer_board.get_type(pos) == "F" else 1))
 
     solver = get_solver(False)
-    state = solver.Solve(model)
+    state = timer(solver.Solve)(model)
 
     if state == cp_model.INFEASIBLE:
         return True
@@ -412,7 +415,7 @@ def _hint_by_csp(
             _model.AddBoolAnd([v for v in assumptions if v != var])
             solver = get_solver(True)
             fut = executor.submit(
-                solver.Solve,
+                timer(solver.Solve),
                 _model, None
             )
             future_to_param[fut] = var
@@ -440,7 +443,7 @@ def _hint_by_csp(
     _model.Add(sum([v for v in assumptions if v not in _results]) == 0)
     solver = get_solver(False)
     logger.trace(f"pos {pos} off {offset} verification and start")
-    status = solver.Solve(_model)
+    status = timer(solver.Solve)(_model)
     logger.trace(f"pos {pos} off {offset} verification and end {status}")
     if status == cp_model.INFEASIBLE:
         # 无解说明已经是包含所有的约束了 是当前层的MUS
@@ -471,7 +474,7 @@ def _hint_by_csp(
 
         solver = get_solver(False)
         logger.trace(f"pos {pos} off {offset}: OR => start {len(mcs)}-{L}-{mid}-{R}\n", end="")
-        status = solver.Solve(_model)
+        status = timer(solver.Solve)(_model)
         logger.trace(f"pos {pos} off {offset}: OR => end {len(mcs)}-{L}-{mid}-{R} => {status}\n", end="")
         if status == cp_model.INFEASIBLE:
             # 无解
@@ -545,7 +548,7 @@ def solver_board(
     model.AddBoolAnd(switch.get_all_vars())
 
     solver = get_solver(True)
-    status = solver.Solve(model)
+    status = timer(solver.Solve)(model)
     positions = []
 
     if status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
@@ -567,7 +570,7 @@ def solver_model(
     back_solver: bool = False
 ):
     solver = get_solver(False)
-    status = solver.Solve(model)
+    status = timer(solver.Solve)(model)
     if back_solver:
         return status in (cp_model.OPTIMAL, cp_model.FEASIBLE), solver
     return status in (cp_model.OPTIMAL, cp_model.FEASIBLE)
