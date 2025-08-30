@@ -13,8 +13,8 @@ from . import AbstractClueSharp
 
 
 class Rule1sharp(AbstractClueSharp):
-    name = ["1#'", "标签"]
-    doc = ("包含以下规则:[V], [1M], [1L], [1W], [1N], [1X], [1P], [1E], "
+    name = ["1#'", "标签'"]
+    doc = ("包含以下规则: [V], [1M], [1L], [1W], [1N], [1X], [1P], [1E], "
            "[1X'], [1K], [1W'], [1E'], [1L1M], [1M1N], [1M1X], [1N1X]")
 
     def __init__(self, board: "AbstractBoard" = None, data=None) -> None:

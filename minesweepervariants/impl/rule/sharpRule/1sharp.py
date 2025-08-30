@@ -14,7 +14,7 @@ from . import AbstractClueSharp
 
 class Rule1sharp(AbstractClueSharp):
     name = ["1#", "标签"]
-    doc = "包含以下规则:[V], [1M], [1L], [1W], [1N], [1X], [1P], [1E]"
+    doc = "包含以下规则: [V], [1M], [1L], [1W], [1N], [1X], [1P], [1E]"
 
     def __init__(self, board: "AbstractBoard" = None, data=None) -> None:
         rules_name = ["V", "1M", "1L", "1W", "1N", "1X", "1P", "1E"]
