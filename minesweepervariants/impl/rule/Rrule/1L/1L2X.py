@@ -12,7 +12,7 @@ def liar_2X(vals: [int, int], random) -> int:
     pm = 1 if random.random() > 0.5 else -1
     vals[idx] += pm
     if vals[idx] < 0:
-        vals[idx] = 0
+        vals[idx] = 1
     if vals[0] > vals[1]:
         vals[0], vals[1] = vals[1], vals[0]
     return vals[0] * 10 + vals[1]
@@ -34,12 +34,9 @@ class Value1L2X(AbstractClueValue):
     value: int
     neighbors: list
 
-    def __init__(self, pos: 'AbstractPosition', count: int = 0, code: bytes = b''):
+    def __init__(self, pos: 'AbstractPosition', code: bytes = b''):
         super().__init__(pos)
-        if code is not None:
-            self.value = code[0]
-        else:
-            self.value = count
+        self.value = code[0]
         self.neighbors = pos.neighbors(2)
     
     def __repr__(self) -> str:
