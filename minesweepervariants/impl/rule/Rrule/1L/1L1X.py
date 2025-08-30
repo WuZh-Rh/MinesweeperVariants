@@ -4,6 +4,14 @@ from .....abs.board import AbstractBoard, AbstractPosition
 from .....utils.tool import get_logger, get_random
 from .....utils.impl_obj import VALUE_QUESS, MINES_TAG
 
+def liar_1X(value: int, random) -> int:
+    value += 1 if random.random() > 0.5 else -1
+    if value < 0:
+        value = 1
+    if value > 8:
+        value = 7
+    return value
+
 class Rule1L1X(AbstractClueRule):
     name = ["1L1X", "LX", "误差 + 十字", "Liar + Cross"]
     doc = ""
@@ -13,11 +21,7 @@ class Rule1L1X(AbstractClueRule):
         for pos, _ in board("N"):
             nei = pos.neighbors(1) + pos.neighbors(4, 4)
             value = len([_pos for _pos in nei if board.get_type(_pos) == "F"])
-            value += 1 if random.random() > 0.5 else -1
-            if value < 0:
-                value = 1
-            if value > 8:
-                value = 7
+            value = liar_1X(value, random)
             board.set_value(pos, Value1L1X(pos, code=bytes([value])))
         return board
 

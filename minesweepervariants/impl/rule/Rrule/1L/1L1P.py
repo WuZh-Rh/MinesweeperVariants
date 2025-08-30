@@ -2,6 +2,20 @@ from .....abs.Rrule import AbstractClueRule, AbstractClueValue
 from .....abs.board import AbstractPosition, AbstractBoard
 from .....utils.tool import get_logger, get_random
 
+def liar_1P(value: int, random) -> int:
+    value += 1 if random.random() > 0.5 else -1
+    if value < 0:
+        value = 1
+    if value > 4:
+        value = 3
+    return value
+
+def unliar_1P(value: int) -> list[int]:
+    if value == 0:
+        return [1]
+    if value == 4:
+        return [3]
+    return [value - 1, value + 1]
 
 def MineStatus_1P(clue: int) -> list[int]:
     """
@@ -66,24 +80,13 @@ class Rule1L1P(AbstractClueRule):
             if nei_type[-1] == "F" and nei_type[0] != "F":
                 value += 1
             
-            value += 1 if random.random() > 0.5 else -1
-            if value < 0:
-                value = 1
-            if value > 4:
-                value = 3
+            value = liar_1P(value, random)
             
             obj = Value1L1P(pos, bytes([value]))
             board.set_value(pos, obj)
             logger.debug(f"[1L1P]set {obj} to {pos}")
 
         return board
-
-def unliar_on_partition(value: int) -> list[int]:
-    if value == 0:
-        return [1]
-    if value == 4:
-        return [3]
-    return [value - 1, value + 1]
 
 class Value1L1P(AbstractClueValue):
     def __init__(self, pos: 'AbstractPosition', code: bytes = b''):
@@ -116,7 +119,7 @@ class Value1L1P(AbstractClueValue):
 
         possible_list = [[]]
 
-        for raw_value in unliar_on_partition(self.value):
+        for raw_value in unliar_1P(self.value):
             for value in MineStatus_1P(raw_value):
                 bool_list = [(value >> i) & 1 == 1 for i in reversed(range(8))]
                 flag = False

@@ -10,6 +10,14 @@ from .....abs.board import AbstractBoard, AbstractPosition
 from .....utils.tool import get_logger, get_random
 from .....utils.impl_obj import VALUE_QUESS, MINES_TAG
 
+def liar_1M(value: int, random) -> int:
+    value += 1 if random.random() > 0.5 else -1
+    if value < 0:
+        value = 1
+    if value > 12:
+        value = 11
+    return value
+
 class Rule1L1M(AbstractClueRule):
     name = ["1L1M", "LM", "误差 + 多雷", "Liar + Multiple"]
     doc = ""
@@ -30,9 +38,7 @@ class Rule1L1M(AbstractClueRule):
                     value += 2
                 else:
                     value += 1
-            value += 1 if random.random() > 0.5 else -1
-            if (value < 0): # 0 - 1
-                value = 1
+            value = liar_1M(value, random)
             board.set_value(pos, Value1L1M(pos, code=bytes([value])))
             logger.debug(f"[1L1M]: put {value} to {pos}")
         return board

@@ -9,6 +9,65 @@ from .....utils.tool import get_logger, get_random
 from .....utils.web_template import MultiNumber
 
 
+def liar_1W(values: list[int], _random) -> list[int]:
+    if len(values) == 0:
+        values = [1]
+    elif len(values) == 1:
+        values[0] += 1 if _random.random() > 0.5 else -1
+        if values[0] > 8:
+            values[0] = 7
+        if values[0] < 0:
+            values[0] = 1
+    else:
+        # if _random.random() > 0.5: # add 1
+        #     idx = _random.randint(0, len(values) - 1)
+        #     values[idx] += 1
+        # else: # minus 1
+        #     non_one_indices = [i for i, v in enumerate(values) if v > 1]
+        #     if non_one_indices:
+        #         idx = _random.choice(non_one_indices)
+        #         values[idx] -= 1
+        #     else:
+        #         values[0] += 1  # all are 1, just add one
+
+        # only first and last can be liared
+        _first = _random.random() > 0.5
+        _pos = _random.random() > 0.5
+
+        if _first:
+            if not _pos and values[0] > 1:
+                values[0] -= 1
+            else:
+                values[0] += 1
+        else:
+            if not _pos and values[-1] > 1:
+                values[-1] -= 1
+            else:
+                values[-1] += 1
+    
+    return values
+
+def unliar_1W(values: list[int]) -> Generator[list[int], None, None]:
+    if len(values) == 1:
+        if values[0] > 1:
+            yield [values[0] - 1]
+        if values[0] < 8:
+            yield [values[0] + 1]
+        else:
+            yield [1]
+    elif len(values) > 1:
+        sum_with_space = sum(values) + len(values) # e.g. 1.2.2 -> 1+2+2+3=8
+        if values[0] > 1:
+            yield [values[0] - 1] + values[1:]
+        if sum_with_space < 8:
+            yield [values[0] + 1] + values[1:]
+        if values[-1] > 1:
+            yield values[:-1] + [values[-1] - 1]
+        if sum_with_space < 8:
+            yield values[:-1] + [values[-1] + 1]
+    else: # should not happen
+        yield [1]
+
 def decode(code: bytes) -> list[int]:
     if len(code) == 2:
         if code[1] > 0xf:
@@ -86,66 +145,6 @@ def MineStatus_1W(clue: list) -> list:
     dfs(0)
     return ans
 
-def liar_on_wall(values: list[int], _random) -> list[int]:
-    if len(values) == 0:
-        values = [1]
-    elif len(values) == 1:
-        values[0] += 1 if _random.random() > 0.5 else -1
-        if values[0] > 8:
-            values[0] = 7
-        if values[0] < 0:
-            values[0] = 1
-    else:
-        # if _random.random() > 0.5: # add 1
-        #     idx = _random.randint(0, len(values) - 1)
-        #     values[idx] += 1
-        # else: # minus 1
-        #     non_one_indices = [i for i, v in enumerate(values) if v > 1]
-        #     if non_one_indices:
-        #         idx = _random.choice(non_one_indices)
-        #         values[idx] -= 1
-        #     else:
-        #         values[0] += 1  # all are 1, just add one
-
-        # only first and last can be liared
-        _first = _random.random() > 0.5
-        _pos = _random.random() > 0.5
-
-        if _first:
-            if not _pos and values[0] > 1:
-                values[0] -= 1
-            else:
-                values[0] += 1
-        else:
-            if not _pos and values[-1] > 1:
-                values[-1] -= 1
-            else:
-                values[-1] += 1
-    
-    return values
-
-# yield all possible raw values
-def unliar_on_wall(values: list[int]) -> Generator[list[int], None, None]:
-    if len(values) == 1:
-        if values[0] > 1:
-            yield [values[0] - 1]
-        if values[0] < 8:
-            yield [values[0] + 1]
-        else:
-            yield [1]
-    elif len(values) > 1:
-        sum_with_space = sum(values) + len(values) # e.g. 1.2.2 -> 1+2+2+3=8
-        if values[0] > 1:
-            yield [values[0] - 1] + values[1:]
-        if sum_with_space < 8:
-            yield [values[0] + 1] + values[1:]
-        if values[-1] > 1:
-            yield values[:-1] + [values[-1] - 1]
-        if sum_with_space < 8:
-            yield values[:-1] + [values[-1] + 1]
-    else: # should not happen
-        yield [1]
-
 class Rule1L1W(AbstractClueRule):
     name = ["1L1W", "LW", "误差 + 数墙", "Liar + Wall"]
     doc = ""
@@ -171,7 +170,7 @@ class Rule1L1W(AbstractClueRule):
             elif value != 0:
                 values.append(value)
             
-            values = liar_on_wall(values, random)
+            values = liar_1W(values, random)
             values.sort()
 
             obj = Value1L1W(pos, encode(values))
@@ -270,7 +269,7 @@ class Value1L1W(AbstractClueValue):
         possible_list = [[]]
 
         # for value in MineStatus_1W(self.values):
-        for raw_values in unliar_on_wall(self.values):
+        for raw_values in unliar_1W(self.values):
             for value in MineStatus_1W(raw_values):
                 bool_list = [(value >> i) & 1 == 1 for i in reversed(range(8))]
                 flag = False
