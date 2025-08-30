@@ -2,10 +2,10 @@ import itertools
 from typing import List, Tuple, Optional
 
 from minesweepervariants.abs.rule import AbstractRule
-from ....abs.Rrule import AbstractClueRule, AbstractClueValue
-from ....abs.board import AbstractBoard, AbstractPosition
+from .....abs.Rrule import AbstractClueRule, AbstractClueValue
+from .....abs.board import AbstractBoard, AbstractPosition
 
-from ....utils.tool import get_logger, get_random
+from .....utils.tool import get_logger, get_random
 
 def liar_2A(value: int | None, random) -> int | None:
     if value is None:
