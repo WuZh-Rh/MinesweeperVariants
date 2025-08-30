@@ -4,7 +4,7 @@ from .....abs.board import AbstractBoard, AbstractPosition
 from .....utils.tool import get_logger, get_random
 from .....utils.impl_obj import VALUE_QUESS, MINES_TAG
 
-def liar_1Xprime(value: int, random) -> int:
+def liar_1Xp(value: int, random) -> int:
     value += 1 if random.random() > 0.5 else -1
     if value < 0:
         value = 1
@@ -12,7 +12,7 @@ def liar_1Xprime(value: int, random) -> int:
         value = 3
     return value
 
-class Rule1L1Xprime(AbstractClueRule):
+class Rule1L1Xp(AbstractClueRule):
     name = ["1L1X'", "LX'", "误差 + 小十字", "Liar + Mini Cross"]
     doc = ""
 
@@ -21,11 +21,11 @@ class Rule1L1Xprime(AbstractClueRule):
         for pos, _ in board("N"):
             nei = pos.neighbors(1)
             value = len([_pos for _pos in nei if board.get_type(_pos) == "F"])
-            value = liar_1Xprime(value, random)
-            board.set_value(pos, Value1L1Xprime(pos, code=bytes([value])))
+            value = liar_1Xp(value, random)
+            board.set_value(pos, Value1L1Xp(pos, code=bytes([value])))
         return board
 
-class Value1L1Xprime(AbstractClueValue):
+class Value1L1Xp(AbstractClueValue):
     value: int
     neighbors: list
 
@@ -42,7 +42,7 @@ class Value1L1Xprime(AbstractClueValue):
     
     @classmethod
     def type(cls) -> bytes:
-        return Rule1L1Xprime.name[0].encode("ascii")
+        return Rule1L1Xp.name[0].encode("ascii")
     
     def code(self) -> bytes:
         return bytes([self.value])
