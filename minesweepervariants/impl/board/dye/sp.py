@@ -13,10 +13,6 @@ class DyeSP(AbstractDye):
             return default
 
     def __init__(self, args):
-        # if args:
-        #     self.base_color = True
-        # else:
-        #     self.base_color = False # 背景色是非染色（第一圈染色）
 
         if not args:
             self.base_color = False # 背景色是非染色（第一圈染色）

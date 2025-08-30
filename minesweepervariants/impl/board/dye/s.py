@@ -13,7 +13,7 @@ from . import AbstractDye
 
 class DyeC(AbstractDye):
     name = "s" # slash
-    fullname = "粗斜线"
+    fullname = "粗斜线染色"
 
     def dye(self, board):
         x = 1

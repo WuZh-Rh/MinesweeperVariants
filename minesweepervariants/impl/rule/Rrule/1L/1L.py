@@ -8,12 +8,19 @@
 [1L]误差：所有线索均比真实值大1或小1
 """
 
-from ....abs.Rrule import AbstractClueRule, AbstractClueValue
-from ....abs.board import AbstractBoard, AbstractPosition
+from .....abs.Rrule import AbstractClueRule, AbstractClueValue
+from .....abs.board import AbstractBoard, AbstractPosition
 
-from ....utils.tool import get_logger, get_random
-from ....utils.impl_obj import VALUE_QUESS, MINES_TAG
+from .....utils.tool import get_logger, get_random
+from .....utils.impl_obj import VALUE_QUESS, MINES_TAG
 
+def liar_V(value: int, random) -> int:
+    value += 1 if random.random() > 0.5 else -1
+    if value < 0:
+        value = 1
+    if value > 8:
+        value = 7
+    return value
 
 class Rule1L(AbstractClueRule):
     name = ["1L", "L", "误差"]
@@ -24,12 +31,7 @@ class Rule1L(AbstractClueRule):
         logger = get_logger()
         for pos, _ in board("N"):
             value = len([_pos for _pos in pos.neighbors(2) if board.get_type(_pos) == "F"])
-            if value == 0:
-                value = 1
-            elif value == 8:
-                value = 7
-            else:
-                value += 1 if random.random() > 0.5 else -1
+            value = liar_V(value, random)
             board.set_value(pos, Value1L(pos, count=value))
             logger.debug(f"Set {pos} to 1L[{value}]")
         return board
@@ -101,9 +103,9 @@ class Value1L(AbstractClueValue):
 
             # 将布尔变量与表达式绑定
             model.Add(neighbor_sum == self.count + 1).OnlyEnforceIf(b1)
-            model.Add(neighbor_sum != self.count + 1).OnlyEnforceIf(b1.Not())
+            # model.Add(neighbor_sum != self.count + 1).OnlyEnforceIf(b1.Not())
 
             model.Add(neighbor_sum == self.count - 1).OnlyEnforceIf(b2)
-            model.Add(neighbor_sum != self.count - 1).OnlyEnforceIf(b2.Not())
+            # model.Add(neighbor_sum != self.count - 1).OnlyEnforceIf(b2.Not())
 
             model.AddBoolOr([b1, b2]).OnlyEnforceIf(s)

@@ -1,24 +1,23 @@
-"""
-[1L1M] 误差 + 多雷
-"""
+from .....abs.Rrule import AbstractClueRule, AbstractClueValue
+from .....abs.board import AbstractBoard, AbstractPosition
+from .....utils.tool import get_logger, get_random
 
-from typing import List
+def liar_1M1X(value: int, random) -> int:
+    value += 1 if random.random() > 0.5 else -1
+    if value < 0:
+        value = 1
+    if value > 12:
+        value = 11
+    return value
 
-from ....abs.Rrule import AbstractClueRule, AbstractClueValue
-from ....abs.board import AbstractBoard, AbstractPosition
-
-from ....utils.tool import get_logger, get_random
-from ....utils.impl_obj import VALUE_QUESS, MINES_TAG
-
-class Rule1L1M(AbstractClueRule):
-    name = ["1L1M", "LM", "误差 + 多雷", "Liar + Multiple"]
+class Rule1LMX(AbstractClueRule):
+    name = ["1LMX", "LMX", "误差 + 多雷 + 十字", "Liar + Multiple + Cross", "1L1M1X"]
     doc = ""
     
     def fill(self, board: AbstractBoard) -> AbstractBoard:
         random = get_random()
-        logger = get_logger()
         for pos, _ in board("N"):
-            positions = pos.neighbors(2)
+            positions = pos.neighbors(1) + pos.neighbors(4, 4)
             value = 0
             for t, d in zip(
                     board.batch(positions, "type"),
@@ -30,21 +29,18 @@ class Rule1L1M(AbstractClueRule):
                     value += 2
                 else:
                     value += 1
-            value += 1 if random.random() > 0.5 else -1
-            if (value < 0): # 0 - 1
-                value = 1
-            board.set_value(pos, Value1L1M(pos, code=bytes([value])))
-            logger.debug(f"[1L1M]: put {value} to {pos}")
+            value = liar_1M1X(value, random)
+            board.set_value(pos, Value1LMX(pos, code=bytes([value])))
         return board
-    
-class Value1L1M(AbstractClueValue):
+
+class Value1LMX(AbstractClueValue):
     value: int
     neighbors: list
 
     def __init__(self, pos: 'AbstractPosition', code: bytes = b''):
         super().__init__(pos)
         self.value = code[0]
-        self.neighbors = pos.neighbors(2)
+        self.neighbors = pos.neighbors(1) + pos.neighbors(4, 4)
 
     def __repr__(self) -> str:
         return f"{self.value}"
@@ -54,7 +50,7 @@ class Value1L1M(AbstractClueValue):
     
     @classmethod
     def type(cls) -> bytes:
-        return Rule1L1M.name[0].encode("ascii")
+        return Rule1LMX.name[0].encode("ascii")
 
     def code(self) -> bytes:
         return bytes([self.value])
@@ -84,8 +80,6 @@ class Value1L1M(AbstractClueValue):
             remaining = self.value - offset
 
             model.Add(neighbor_sum == remaining + 1).OnlyEnforceIf(b1)
-            model.Add(neighbor_sum != remaining + 1).OnlyEnforceIf(b1.Not())
             model.Add(neighbor_sum == remaining - 1).OnlyEnforceIf(b2)
-            model.Add(neighbor_sum != remaining - 1).OnlyEnforceIf(b2.Not())
 
             model.AddBoolOr([b1, b2]).OnlyEnforceIf(s)
