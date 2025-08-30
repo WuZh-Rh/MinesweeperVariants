@@ -46,6 +46,27 @@ class Value1L1X(AbstractClueValue):
     
     def code(self) -> bytes:
         return bytes([self.value])
+
+    def deduce_cells(self, board: 'AbstractBoard') -> bool:
+        type_dict = {"N": [], "F": []}
+        for pos in self.neighbor:
+            t = board.get_type(pos)
+            if t in ("", "C"):
+                continue
+            type_dict[t].append(pos)
+        n_num, f_num = len(type_dict["N"]), len(type_dict["F"])
+        if n_num == 0:
+            return False
+        if f_num == self.count + 1:
+            for i in type_dict["N"]:
+                board.set_value(i, VALUE_QUESS)
+            return True
+        if n_num + f_num == self.count - 1:
+            for i in type_dict["N"]:
+                board.set_value(i, MINES_TAG)
+            return True
+        return False
+
     
     def create_constraints(self, board: 'AbstractBoard', switch):
         model = board.get_model()
