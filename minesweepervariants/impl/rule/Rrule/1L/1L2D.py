@@ -4,7 +4,7 @@ from .....abs.board import AbstractBoard, AbstractPosition
 from .....utils.tool import get_logger, get_random
 from .....utils.impl_obj import VALUE_QUESS, MINES_TAG
 
-def liar_1X(value: int, random) -> int:
+def liar_2D(value: int, random) -> int:
     value += 1 if random.random() > 0.5 else -1
     if value < 0:
         value = 1
@@ -12,27 +12,27 @@ def liar_1X(value: int, random) -> int:
         value = 7
     return value
 
-class Rule1L1X(AbstractClueRule):
-    name = ["1L1X", "LX", "误差 + 十字", "Liar + Cross"]
+class Rule1L2D(AbstractClueRule):
+    name = ["1L2D", "误差 + 偏移", "Liar + Deviation"]
     doc = ""
 
     def fill(self, board: AbstractBoard) -> AbstractBoard:
         random = get_random()
         for pos, _ in board("N"):
-            nei = pos.neighbors(1) + pos.neighbors(4, 4)
+            nei = pos.up(1).neighbors(0, 2)
             value = len([_pos for _pos in nei if board.get_type(_pos) == "F"])
-            value = liar_1X(value, random)
-            board.set_value(pos, Value1L1X(pos, code=bytes([value])))
+            value = liar_2D(value, random)
+            board.set_value(pos, Value1L2D(pos, code=bytes([value])))
         return board
 
-class Value1L1X(AbstractClueValue):
+class Value1L2D(AbstractClueValue):
     value: int
     neighbors: list
 
     def __init__(self, pos: 'AbstractPosition', code: bytes = b''):
         super().__init__(pos)
         self.value = code[0]
-        self.neighbors = pos.neighbors(1) + pos.neighbors(4, 4)
+        self.neighbors = pos.up(1).neighbors(0, 2)
     
     def __repr__(self) -> str:
         return str(self.value)
@@ -42,7 +42,7 @@ class Value1L1X(AbstractClueValue):
     
     @classmethod
     def type(cls) -> bytes:
-        return Rule1L1X.name[0].encode("ascii")
+        return Rule1L2D.name[0].encode("ascii")
     
     def code(self) -> bytes:
         return bytes([self.value])
@@ -66,7 +66,6 @@ class Value1L1X(AbstractClueValue):
                 board.set_value(i, MINES_TAG)
             return True
         return False
-
     
     def create_constraints(self, board: 'AbstractBoard', switch):
         model = board.get_model()

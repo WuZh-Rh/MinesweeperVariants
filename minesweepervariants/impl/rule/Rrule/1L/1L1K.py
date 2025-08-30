@@ -49,7 +49,7 @@ class Value1L1K(AbstractClueValue):
 
     def deduce_cells(self, board: 'AbstractBoard') -> bool:
         type_dict = {"N": [], "F": []}
-        for pos in self.neighbor:
+        for pos in self.neighbors:
             t = board.get_type(pos)
             if t in ("", "C"):
                 continue
@@ -57,11 +57,11 @@ class Value1L1K(AbstractClueValue):
         n_num, f_num = len(type_dict["N"]), len(type_dict["F"])
         if n_num == 0:
             return False
-        if f_num == self.count + 1:
+        if f_num == self.value + 1:
             for i in type_dict["N"]:
                 board.set_value(i, VALUE_QUESS)
             return True
-        if n_num + f_num == self.count - 1:
+        if n_num + f_num == self.value - 1:
             for i in type_dict["N"]:
                 board.set_value(i, MINES_TAG)
             return True
