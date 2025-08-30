@@ -10,8 +10,8 @@ def liar_1M1N(value: int, random) -> int:
         value = 7
     return value
 
-class Rule1L1M1N(AbstractClueRule):
-    name = ["1L1M1N", "LMN", "误差 + 多雷 + 负雷", "Liar + Multiple + Negative"]
+class Rule1LMN(AbstractClueRule):
+    name = ["1LMN", "LMN", "误差 + 多雷 + 负雷", "Liar + Multiple + Negative", "1L1M1N"]
     doc = ""
 
     def fill(self, board: AbstractBoard) -> AbstractBoard:
@@ -30,10 +30,10 @@ class Rule1L1M1N(AbstractClueRule):
                 else:
                     value -= 1
             value = liar_1M1N(value, random)
-            board.set_value(pos, Value1L1M1N(pos, code=bytes([value])))
+            board.set_value(pos, Value1LMN(pos, code=bytes([value])))
         return board
 
-class Value1L1M1N(AbstractClueValue):
+class Value1LMN(AbstractClueValue):
     value: int
     neighbors: list
 
@@ -50,7 +50,7 @@ class Value1L1M1N(AbstractClueValue):
     
     @classmethod
     def type(cls) -> bytes:
-        return Rule1L1M1N.name[0].encode("ascii")
+        return Rule1LMN.name[0].encode("ascii")
 
     def code(self) -> bytes:
         return bytes([self.value])
