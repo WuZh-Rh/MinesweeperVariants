@@ -15,7 +15,7 @@ from ....utils.tool import get_logger
 
 
 class Rule2M(AbstractClueRule):
-    name = ["2M", "取模", "Mod"]
+    name = ["2M", "取模", "Modulo"]
     doc = "线索与周围8格的雷数除以3的余数相同"
 
     def fill(self, board: 'AbstractBoard') -> 'AbstractBoard':
