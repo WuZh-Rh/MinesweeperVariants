@@ -9,6 +9,7 @@ import shutil
 import sys
 import argparse
 import textwrap
+from importlib.util import find_spec
 
 from minesweepervariants import puzzle_query
 from minesweepervariants import puzzle
@@ -153,6 +154,9 @@ if args.test:
         unseed=not args.onseed,
     )
 elif args.query == defaults.get("query"):
+    if not args.no_image and find_spec("PIL") is None:
+        print("可选依赖`image`未安装，请使用`pip install minesweepervariants[image]`安装, 或者添加--no-image参数不绘制图片.")
+        exit(1)
     puzzle(
         log_lv=args.log_lv,
         seed=args.seed,

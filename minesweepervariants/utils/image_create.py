@@ -185,10 +185,7 @@ def draw_board(
     :param cell_size: 单元格大小。
     :param output: 输出文件名（不含扩展名）。
     """
-    try:
-        from PIL import Image, ImageDraw, ImageFont
-    except ImportError:
-        raise ImportError("可选依赖Pillow未安装，请使用`pip install minesweepervariants[image]`安装")
+    from PIL import Image, ImageDraw, ImageFont
     from .element_renderer import Renderer
     def load_font(size: int) -> ImageFont.FreeTypeFont:
         path = pathlib.Path(basepath[0])
