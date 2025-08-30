@@ -338,7 +338,7 @@ develoop = ["giving (>=0.4.3,<0.5.0)", "rich (>=10.13.0)"]
 
 [package.source]
 type = "git"
-url = "https://github.com/KoolShow/jurigged.git"
+url = "https://github.com/Minesweepervariants-Fanmade/jurigged.git"
 reference = "0.6.1-dev"
 resolved_reference = "b283a87712068d3886c4008c754c246698fe37c2"
 
@@ -1250,4 +1250,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.15"
-content-hash = "85b2b13d9ff0479b735fd3d85ad5d146612fde10556422ed544ce233278de244"
+content-hash = "40eff435eca9948b3cc756a153557845e43388921f528d631c43fdd4193f1447"
