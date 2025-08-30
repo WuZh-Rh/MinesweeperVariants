@@ -4,9 +4,10 @@
 # @Time    : 2025/06/29 16:12
 # @Author  : Wu_RH
 # @FileName: image_create.py
+import pathlib
+from .. import __path__ as basepath
 from ..abs.board import AbstractBoard
 from ..config.config import IMAGE_CONFIG, DEFAULT_CONFIG
-from ..utils.element_renderer import *
 
 
 def _hex_to_rgb(hex_color: str):
@@ -184,8 +185,13 @@ def draw_board(
     :param cell_size: 单元格大小。
     :param output: 输出文件名（不含扩展名）。
     """
+    try:
+        from PIL import Image, ImageDraw, ImageFont
+    except ImportError:
+        raise ImportError("可选依赖Pillow未安装，请使用`pip install minesweepervariants[image]`安装")
+    from .element_renderer import Renderer
     def load_font(size: int) -> ImageFont.FreeTypeFont:
-        path = pathlib.Path(minesweepervariants.__path__[0])
+        path = pathlib.Path(basepath[0])
         path /= CONFIG["assets"]
         path /= CONFIG["font"]["name"]
         try:

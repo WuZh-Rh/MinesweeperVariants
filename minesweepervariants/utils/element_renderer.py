@@ -2,17 +2,20 @@ import os
 import pathlib
 import traceback
 
-from PIL import Image, ImageDraw, ImageFont
-from typing import Dict, Tuple
+from typing import TYPE_CHECKING, Dict, Tuple
 
 import minesweepervariants
 from minesweepervariants.utils.tool import get_logger
 
+if TYPE_CHECKING:
+    from PIL import Image, ImageDraw, ImageFont
 
 class Renderer:
     def __init__(self, cell_size: float, background_white: bool,
                  origin: Tuple[float, float], font_path: str,
                  assets: str, debug=False):
+        from PIL import Image, ImageDraw, ImageFont
+
         self.cell_size = cell_size
         self.background_white = background_white
         self.origin = origin
@@ -20,6 +23,7 @@ class Renderer:
         self.font_path = pathlib.Path(minesweepervariants.__path__[0])
         self.font_path /= assets
         self.font_path /= font_path
+
         try:
             ImageFont.truetype(self.font_path, 1)
         except Exception as e:
@@ -35,12 +39,12 @@ class Renderer:
 
         self.debug = debug
 
-    def render(self, image: Image.Image, element: Dict):
+    def render(self, image: 'Image.Image', element: Dict):
         abs_x, abs_y = self.origin
         root_box = (abs_x, abs_y, self.cell_size, self.cell_size)
         self._render_element(image, element, root_box)
 
-    def _render_element(self, image: Image.Image, element: Dict,
+    def _render_element(self, image: 'Image.Image', element: Dict,
                         box: Tuple[float, float, float, float]):
         """
         递归渲染单个元素 - 添加调试边框
@@ -336,7 +340,7 @@ class Renderer:
 
         return max_child_width, total_height
 
-    def _render_text(self, image: Image.Image, element: Dict,
+    def _render_text(self, image: 'Image.Image', element: Dict,
                      box: Tuple[float, float, float, float]):
         # 获取文本颜色
         color = element['color_white' if self.background_white else 'color_black']
@@ -387,7 +391,7 @@ class Renderer:
         # 合成到主图像
         image.alpha_composite(temp_img, (int(elem_x), int(elem_y)))
 
-    def _render_image(self, image: Image.Image, element: Dict,
+    def _render_image(self, image: 'Image.Image', element: Dict,
                       box: Tuple[float, float, float, float]):
         path = pathlib.Path(minesweepervariants.__path__[0])
         path /= self.assets_path
@@ -431,7 +435,7 @@ class Renderer:
         # 合成到主图像
         image.alpha_composite(scaled_img, (int(elem_x), int(elem_y)))
 
-    def _render_row(self, image: Image.Image, element: Dict,
+    def _render_row(self, image: 'Image.Image', element: Dict,
                     box: Tuple[float, float, float, float]):
         """
         渲染行元素（水平排列） - 添加固定尺寸支持
@@ -554,7 +558,7 @@ class Renderer:
 
         return
 
-    def _render_col(self, image: Image.Image, element: Dict,
+    def _render_col(self, image: 'Image.Image', element: Dict,
                     box: Tuple[float, float, float, float]):
         """
         渲染列元素（垂直排列） - 添加固定尺寸支持

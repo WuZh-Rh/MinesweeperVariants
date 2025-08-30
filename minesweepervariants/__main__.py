@@ -57,6 +57,8 @@ parser.add_argument("--log-lv", default=defaults.get("log_lv"),
                     help="日志等级，如 DEBUG、INFO、WARNING")
 parser.add_argument("--board-class", default=defaults.get("board_class"),
                     help="题板的类名/题板的名称 通常使用默认值即可")
+parser.add_argument("--no-image", action="store_true",
+                    help="是否不生成图片")
 parser_list.add_argument("--shell", action="store_true", default=False)
 args = parser.parse_args()
 
@@ -164,6 +166,7 @@ elif args.query == defaults.get("query"):
         board_class=args.board_class,
         vice_board=args.vice_board,
         unseed=not args.onseed,
+        image=not args.no_image,
     )
 else:
     puzzle_query(

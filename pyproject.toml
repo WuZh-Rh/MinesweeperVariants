@@ -16,13 +16,16 @@ version = "0.0.0"
 
 [tool.poetry.dependencies]
 ortools = ">=9.13.4784,<9.14.0"
-pillow = ">=11.3.0,<11.4.0"
+pillow = { version = ">=11.3.0,<11.4.0", optional = true }
 pyyaml = ">=6.0.2,<6.1.0"
 flask = { version = ">=3.1.2,<4.0.0", extras = ["async"] }
 flask-cors = ">=6.0.1,<7.0.0"
 waitress = ">=3.0.2,<3.1.0"
 tqdm = ">=4.67.1,<5.0.0"
 orjson = ">=3.11.2,<4.0.0"
+
+[tool.poetry.extras]
+image = ["pillow"]
 
 [tool.poetry.requires-plugins]
 poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }

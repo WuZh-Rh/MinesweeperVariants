@@ -36,6 +36,7 @@ def main(
         board_class: str,  # 题板的名称
         vice_board: bool,  # 启用删除副板
         unseed: bool,
+        image: bool,  # 是否生成图片
 ):
     rule_code = rules[:]
     logger = get_logger(log_lv=log_lv)
@@ -160,18 +161,19 @@ def main(
         rule_code = [base64.urlsafe_b64encode(rule.encode("utf-8")).decode("utf-8") for rule in rule_code]
         f.write(f"\n题板代码: \n{encode_board(answer_code)}:{mask.hex()}:{':'.join(rule_code)}\n")
 
-    image_bytes = draw_board(board=get_board(board_class)(code=board_code), cell_size=100, output="demo",
-                             bottom_text=(rule_text +
-                                          f"-R{'*' if drop_r else total}/{n_num}" +
-                                          ("\n" if unseed else f"-{get_seed()}\n")))
-    draw_board(board=get_board(board_class)(code=answer_code), output="answer", cell_size=100,
-               bottom_text=(rule_text +
-                            f"-R{total}/{n_num}" +
-                            ("\n" if unseed else f"-{get_seed()}\n")))
+    if image:
+        image_bytes = draw_board(board=get_board(board_class)(code=board_code), cell_size=100, output="demo",
+                                bottom_text=(rule_text +
+                                            f"-R{'*' if drop_r else total}/{n_num}" +
+                                            ("\n" if unseed else f"-{get_seed()}\n")))
+        draw_board(board=get_board(board_class)(code=answer_code), output="answer", cell_size=100,
+                bottom_text=(rule_text +
+                                f"-R{total}/{n_num}" +
+                                ("\n" if unseed else f"-{get_seed()}\n")))
 
-    filepath = os.path.join(CONFIG["output_path"], "demo.png")
-    with open(filepath, "wb") as f:
-        f.write(image_bytes)
+        filepath = os.path.join(CONFIG["output_path"], "demo.png")
+        with open(filepath, "wb") as f:
+            f.write(image_bytes)
 
     logger.info("\n\n" + "=" * 20 + "\n")
     logger.info("\n生成时间" + logger.get_time() + "\n")
