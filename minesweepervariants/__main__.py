@@ -192,4 +192,5 @@ else:
         vice_board=args.vice_board,
         unseed=not args.onseed,
         file_name=args.file_name,
+        image=not args.no_image,
     )

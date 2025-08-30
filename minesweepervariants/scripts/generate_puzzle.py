@@ -132,45 +132,47 @@ def main(
     mask = mask.to_bytes(byte_length, "big", signed=False)
     rule_code = [base64.urlsafe_b64encode(rule.encode("utf-8")).decode("utf-8") for rule in rule_code]
 
-    if not file_name:
-        with open(os.path.join(CONFIG["output_path"], "demo.txt"), "a", encoding="utf-8") as f:
-            f.write("\n" + ("=" * 100) + "\n\n生成时间" + logger.get_time() + "\n")
-            f.write(f"生成用时:{time_used}s\n")
-            f.write(f"总雷数: {total}/{n_num}\n")
-            f.write(f"种子: {get_seed()}\n")
-            f.write(rule_text)
-            f.write(board_str)
-            f.write(answer)
+    with open(os.path.join(CONFIG["output_path"], f"{file_name or 'demo'}.txt"), "a", encoding="utf-8") as f:
+        f.write("\n" + ("=" * 100) + "\n\n生成时间" + logger.get_time() + "\n")
+        f.write(f"生成用时:{time_used}s\n")
+        f.write(f"总雷数: {total}/{n_num}\n")
+        f.write(f"种子: {get_seed()}\n")
+        f.write(rule_text)
+        f.write(board_str)
+        f.write(answer)
 
-            f.write(f"\n答案: img -c {encode_board(answer_code)} ")
-            f.write(f"-r \"{rule_text}-R{total}/")
-            f.write(f"{n_num}")
-            if unseed:
-                f.write(f"-{get_seed()}\" ")
-            else:
-                f.write(" ")
-            f.write("-o answer\n")
+        f.write(f"\n答案: img -c {encode_board(answer_code)} ")
+        f.write(f"-r \"{rule_text}-R{total}/")
+        f.write(f"{n_num}")
+        if unseed:
+            f.write(f"-{get_seed()}\" ")
+        else:
+            f.write(" ")
+        f.write("-o answer\n")
 
-            f.write(f"\n题板: img -c {encode_board(board_code)} ")
-            f.write(f"-r \"{rule_text}-R{'*' if drop_r else total}/")
-            f.write(f"{n_num}")
-            if unseed:
-                f.write(f"-{get_seed()}\" ")
-            else:
-                f.write(" ")
-            f.write("-o demo\n")
+        f.write(f"\n题板: img -c {encode_board(board_code)} ")
+        f.write(f"-r \"{rule_text}-R{'*' if drop_r else total}/")
+        f.write(f"{n_num}")
+        if unseed:
+            f.write(f"-{get_seed()}\" ")
+        else:
+            f.write(" ")
+        f.write("-o demo\n")
 
-            f.write(f"\n题板代码: \n{encode_board(answer_code)}:{mask.hex()}:{':'.join(rule_code)}\n")
+        f.write(f"\n题板代码: \n{encode_board(answer_code)}:{mask.hex()}:{':'.join(rule_code)}\n")
 
-    draw_board(board=get_board(board_class)(code=board_code), cell_size=100, output=file_name + "demo",
-               bottom_text=(rule_text +
-                            f"-R{'*' if drop_r else total}/{n_num}" +
-                            ("\n" if unseed else f"-{get_seed()}\n")))
+        
 
-    draw_board(board=get_board(board_class)(code=answer_code), output=file_name + "answer", cell_size=100,
-               bottom_text=(rule_text +
-                            f"-R{total}/{n_num}" +
-                            ("\n" if unseed else f"-{get_seed()}\n")))
+    if image:
+        draw_board(board=get_board(board_class)(code=board_code), cell_size=100, output=file_name + "demo",
+                bottom_text=(rule_text +
+                                f"-R{'*' if drop_r else total}/{n_num}" +
+                                ("\n" if unseed else f"-{get_seed()}\n")))
+
+        draw_board(board=get_board(board_class)(code=answer_code), output=file_name + "answer", cell_size=100,
+                bottom_text=(rule_text +
+                                f"-R{total}/{n_num}" +
+                                ("\n" if unseed else f"-{get_seed()}\n")))
 
     logger.info("\n\n" + "=" * 20 + "\n")
     logger.info("\n生成时间" + logger.get_time() + "\n")
