@@ -4,11 +4,11 @@
 
 from typing import List
 
-from ....abs.Rrule import AbstractClueRule, AbstractClueValue
-from ....abs.board import AbstractBoard, AbstractPosition
+from .....abs.Rrule import AbstractClueRule, AbstractClueValue
+from .....abs.board import AbstractBoard, AbstractPosition
 
-from ....utils.tool import get_logger, get_random
-from ....utils.impl_obj import VALUE_QUESS, MINES_TAG
+from .....utils.tool import get_logger, get_random
+from .....utils.impl_obj import VALUE_QUESS, MINES_TAG
 
 class Rule1L1M(AbstractClueRule):
     name = ["1L1M", "LM", "误差 + 多雷", "Liar + Multiple"]

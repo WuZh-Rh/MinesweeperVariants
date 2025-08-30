@@ -8,11 +8,11 @@
 [1L]误差：所有线索均比真实值大1或小1
 """
 
-from ....abs.Rrule import AbstractClueRule, AbstractClueValue
-from ....abs.board import AbstractBoard, AbstractPosition
+from .....abs.Rrule import AbstractClueRule, AbstractClueValue
+from .....abs.board import AbstractBoard, AbstractPosition
 
-from ....utils.tool import get_logger, get_random
-from ....utils.impl_obj import VALUE_QUESS, MINES_TAG
+from .....utils.tool import get_logger, get_random
+from .....utils.impl_obj import VALUE_QUESS, MINES_TAG
 
 
 class Rule1L(AbstractClueRule):
